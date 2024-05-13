@@ -1,0 +1,104 @@
+@import '_media.scss';
+@import '_typography.scss';
+
+html, body {
+    font-size: 16px;
+    background-color: var(--color-white);
+}
+
+.text-xs { @include text-xs; }
+.text-s { @include text-s; }
+.text-m { @include text-m; }
+.text-lg { @include text-lg; }
+.text-xl { @include text-xl; }
+.text-lead { @include text-lead; }
+
+.d1 { @include d1; }
+.d2 { @include d2; }
+.d3 { @include d3; }
+.d4 { @include d4; }
+.d5 { @include d5; }
+.d6 { @include d6; }
+
+h1, .h1 { @include h1; }
+h2, .h2 { @include h2; }
+h3, .h3 { @include h3; }
+h4, .h4 { @include h4; }
+h5, .h5 { @include h5; }
+h6, .h6 { @include h6; }
+
+.wrapper {
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.center
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mainMain {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 1 !important;
+}
+
+.showSection {
+    transition: opacity ease-in 280ms;
+    opacity: 1 !important;
+}
+
+.section-container
+{
+    width: 100%; 
+
+    @include sm
+    {
+        max-width: 320px;
+    }
+
+    @include md {
+        max-width: 720px;
+    }
+
+    @include lg {
+        max-width: 920px;
+    }
+
+    @include xl {
+        max-width: 1120px;
+    }
+
+    @include xxl {
+        max-width: 1320px;
+    }
+}
+
+.overlay
+{
+    opacity: 0.5;
+    filter: blur(5px); 
+    overflow-y: hidden;
+}
+
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: var(--color-gray-100);
+
+
+    .container {
+        gap: 1rem;
+    }
+}
+
+.hideSpan{
+    display: none;
+}

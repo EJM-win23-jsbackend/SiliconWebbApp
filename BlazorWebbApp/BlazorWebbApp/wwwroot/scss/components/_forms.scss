@@ -1,0 +1,67 @@
+.sign-in-form
+{
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+.field-validation-error {
+    color: var(--color-danger);
+    font-size: 0.9rem;
+    margin-left: 0.2rem;
+}
+
+.error {
+    color: var(--color-danger);
+    opacity: 1;
+    transition: ease-out 1200ms;
+    font-size: 0.9rem;
+}
+
+.center
+{
+    text-align: center;
+}
+
+.success {
+    color: var(--color-success);
+    opacity: 1;
+    transition: ease-out 1200ms;
+    font-size: 0.9rem;
+}
+
+.field-validation-valid {
+    margin-left: 0.2rem;
+}
+
+.form-check-label {
+    margin-left: 8px;
+}
+
+.form-check-input {
+    margin-top: 2px;
+}
+
+.checkmark {
+    position: relative;
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid var(--color-success);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.hide
+{
+    display: none !important;
+}
