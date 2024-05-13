@@ -1,0 +1,21 @@
+﻿<footer>
+    <div class="container">
+        @* när man går till sidan authentication ska inte socialmedia knapparna synas *@
+        <div class="socialmedia">
+            <a class="btn-social" href="https://www.facebook.com" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
+            <a class="btn-social" href="https://www.twitter.com" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+            <a class="btn-social" href="https://www.instagram.com" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
+            <a class="btn-social" href="https://www.youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+        <div class="copyrights">
+            &copy; @DateTime.Now.Year Silicon All rights reserved
+            <p>.Pulvinar urna condimentum amet tempor, ornare integer. Lorem odio justo malesuada suspendisse viverra aliquet quisque turpis non. Feugiat in odio non nunc ornare consectetur.</p>
+        </div>
+    </div>
+</footer>
+
+@* @((ViewContext.RouteData.Values["Controller"]!.ToString() == "Authentication") ? " d-none" : " socialmedia") *@
+
+@code {
+
+}
