@@ -3,13 +3,25 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
+  margin-bottom: 5rem;
+}
+@media (min-width: 992px) {
+  .header {
+    margin-bottom: 0rem;
+  }
 }
 .header .container {
   display: grid;
   align-items: center;
-  grid-template-columns: auto 1fr auto auto;
-  grid-template-areas: "logo menu switch buttons";
+  grid-template-columns: auto 2fr auto;
+  grid-template-areas: "logo menu buttons";
   gap: 40px;
+}
+@media (min-width: 992px) {
+  .header .container {
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-areas: "logo menu switch buttons";
+  }
 }
 .header .container .logo {
   grid-area: logo;
@@ -23,12 +35,15 @@
 }
 .header .container .btn-switch {
   grid-area: switch;
+  display: none;
+}
+@media (min-width: 992px) {
+  .header .container .btn-switch {
+    display: block;
+  }
 }
 .header .container .account-buttons {
   grid-area: buttons;
-  display: flex;
   gap: 15px;
-}
-.header .container .account-buttons p {
-  display: none;
+  display: flex;
 }
