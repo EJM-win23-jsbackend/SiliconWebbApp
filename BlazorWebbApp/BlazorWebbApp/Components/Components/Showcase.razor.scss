@@ -1,0 +1,68 @@
+.showcase {
+    display: flex;
+    margin-top: -4rem;
+    width: 100%; /* Take up the entire width of the viewport */
+    max-width: 100%; /* Ensure it doesn't exceed the viewport width */
+
+    @media(min-width: 992px) {
+        margin-top: 1rem;
+    }
+
+
+    .taskmaster-image {
+        display: none;
+
+        @media screen and (min-width: 990px) {
+            align-self: baseline;
+            overflow: hidden;
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+    }
+
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50%;
+
+        .content {
+            text-align: center;
+            padding-top: 20px;
+            margin-bottom: 100px;
+
+            @media screen and (min-width: 992px) {
+                text-align: left;
+                margin-top: 60px;
+                margin-left: 6rem;
+            }
+
+            a {
+                @media screen and (min-width: 992px) {
+                    width: 15rem;
+                }
+            }
+
+            p {
+                padding-top: 1rem;
+                padding-bottom: 2rem;
+            }
+
+            h6 {
+                padding-top: 2rem;
+                padding-bottom: 1rem;
+
+                @media screen and (min-width: 992px) {
+                    padding-top: 6rem;
+                    padding-bottom: 1rem;
+                }
+            }
+
+            .brands {
+                display: flex;
+                gap: 1rem;
+            }
+        }
+    }
+}

@@ -6,5 +6,13 @@
   {
     "outputFile": "Components/Components/Header.razor.css",
     "inputFile": "Components/Components/Header.razor.scss"
+  },
+  {
+    "outputFile": "Components/Components/Showcase.css",
+    "inputFile": "Components/Components/Showcase.scss"
+  },
+  {
+    "outputFile": "Components/Components/Showcase.razor.css",
+    "inputFile": "Components/Components/Showcase.razor.scss"
   }
 ]
