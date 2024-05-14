@@ -1,0 +1,60 @@
+.header {
+    padding: 15px 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    margin-bottom: 5rem;
+
+    @media(min-width: 992px) {
+        margin-bottom: 0rem;
+    }
+
+    .container {
+        display: grid;
+        align-items: center;
+        grid-template-columns: auto 2fr auto;
+        grid-template-areas: "logo menu buttons";
+        gap: 40px;
+
+        @media(min-width: 992px) {
+            grid-template-columns: auto 1fr auto auto;
+            grid-template-areas: "logo menu switch buttons";
+        }
+
+        .logo {
+            grid-area: logo;
+        }
+
+        .menu {
+            grid-area: menu;
+
+            nav {
+                display: flex;
+                gap: 15px;
+            }
+        }
+
+        .btn-switch {
+            grid-area: switch;
+            display: none;
+
+            @media(min-width: 992px) {
+                display: block;
+            }
+        }
+
+        .account-buttons {
+            grid-area: buttons;
+            gap: 15px;
+            display: flex;
+
+            .profile {
+                .profile-image {
+                    height: 3.5rem;
+                    width: 3.5rem;
+                    border-radius: 50%;
+                }            
+            }
+        }
+    }
+}
