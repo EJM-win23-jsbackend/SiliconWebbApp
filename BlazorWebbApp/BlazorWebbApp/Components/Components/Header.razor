@@ -1,0 +1,40 @@
+﻿<div class="header">
+    <div class="container">
+        <a class="logo" href="/"><img src="/images/silicon-logotype-light.svg" alt=""></a>
+        <div class="menu">
+            <nav class="nav">
+                <NavLink class="a textLinks" href="/">Home</NavLink>
+                <NavLink class="a textLinks" href="/contact">Contact</NavLink>
+                <AuthorizeView>
+                    <Authorized>
+                        <NavLink class="a textLinks" href="/courses">Courses</NavLink>
+                        <NavLink class="a textLinks" href="/admin">Admin</NavLink>
+                    </Authorized>
+                </AuthorizeView>
+            </nav>
+        </div>
+        <div class="btn-switch">
+            <label>Light</label>
+            <label class="switch" for="switch-mode">
+                <input type="checkbox" class="switch-mode" />
+                <div class="slider round"></div>
+            </label>
+            <label>Dark</label>
+        </div>
+        <div class="account-buttons">
+            <AuthorizeView>
+                <Authorized>
+                    <a class="btn btn-theme" href="/account/manage"><i class="fa-regular fa-user"></i><span>My account</span></a>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="btn btn-gray" href="/account/login"><i class="fa-solid fa-right-to-bracket"></i><span>Sign in</span></a>
+                    <a class="btn btn-theme" href="/account/register"><i class="fa-regular fa-user"></i><span>Sign up</span></a>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

@@ -1,0 +1,34 @@
+﻿.header {
+  padding: 15px 0;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+.header .container {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-areas: "logo menu switch buttons";
+  gap: 40px;
+}
+.header .container .logo {
+  grid-area: logo;
+}
+.header .container .menu {
+  grid-area: menu;
+}
+.header .container .menu nav {
+  display: flex;
+  gap: 15px;
+}
+.header .container .btn-switch {
+  grid-area: switch;
+}
+.header .container .account-buttons {
+  grid-area: buttons;
+  display: flex;
+  gap: 15px;
+}
+.header .container .account-buttons p {
+  display: none;
+}
