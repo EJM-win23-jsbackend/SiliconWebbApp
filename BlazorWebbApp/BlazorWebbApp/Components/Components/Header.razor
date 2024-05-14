@@ -24,7 +24,11 @@
         <div class="account-buttons">
             <AuthorizeView>
                 <Authorized>
-                    <a class="btn btn-theme" href="/account/manage"><i class="fa-regular fa-user"></i><span>My account</span></a>
+                    <div class="profile">
+                        <a href="/account/manage">
+                            <img class="profile-image" src="/images/avatar.jpg" /> 
+                        </a>
+                    </div>
                 </Authorized>
                 <NotAuthorized>
                     <a class="btn btn-gray" href="/account/login"><i class="fa-solid fa-right-to-bracket"></i><span>Sign in</span></a>
