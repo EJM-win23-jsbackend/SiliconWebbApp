@@ -47,6 +47,14 @@
             grid-area: buttons;
             gap: 15px;
             display: flex;
+
+            .profile {
+                .profile-image {
+                    height: 3.5rem;
+                    width: 3.5rem;
+                    border-radius: 50%;
+                }            
+            }
         }
     }
 }
