@@ -13,8 +13,9 @@
 
         form {
 
-            .input-group {
+            .input-custom {
                 display: grid;
+                border-radius: 0.4rem !important;
             }
 
             label {
