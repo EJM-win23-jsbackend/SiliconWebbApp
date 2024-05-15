@@ -1,0 +1,29 @@
+.signin {
+    .container {
+        margin-top: 4rem;
+        max-width: 40%;
+
+        form {
+
+            .content {
+                display: grid;
+                gap: 1rem;
+                margin-top: 2rem;
+                margin-bottom: 2rem;
+
+                a {
+                    text-align: center;
+                }
+            }
+            // removes the red validation color on text inputs
+            .input-validation-error {
+                box-shadow: none;
+                color: black;
+
+                &::placeholder {
+                    color: black;
+                }
+            }
+        }
+    }
+}
