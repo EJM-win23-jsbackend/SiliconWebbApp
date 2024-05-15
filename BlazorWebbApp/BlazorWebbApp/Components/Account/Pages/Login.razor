@@ -8,6 +8,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
 
 <PageTitle>Log in</PageTitle>
 
@@ -60,34 +61,26 @@
     [SupplyParameterFromForm]
     private InputModel SignInForm { get; set; } = new();
 
-    // added from chatgpt
-    protected override void OnInitialized()
-    {
-        // Capture the return URL from the query string
-        ReturnUrl = NavigationManager.Uri;
-    }
-
     public async Task LoginUser()
     {
-        try
-        {
+        // "try catch" seems to be the reason the "Redirect" is not working, works fine without
+        // try
+        // {
             var result = await SignInManager.PasswordSignInAsync(SignInForm.Email, SignInForm.Password, SignInForm.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                if (!string.IsNullOrEmpty(ReturnUrl))
-                {
-                     NavigationManager.NavigateTo(ReturnUrl ?? "/"); // not working, the ReturnUrl is always null, (or was, before using OnInitatilized())
-                }
-                else { NavigationManager.NavigateTo("/"); } // not working, trows an exception
+                RedirectManager.RedirectTo(ReturnUrl ?? "/"); // ReturnUrl still seems to always be null
             }
-            else { StatusMessage = "Wrong email or password"; }
-        }
-        catch (Exception ex)
-        {
-            NavigationManager.NavigateTo("/"); // this works but may not be the best solution
-            StatusMessage = "An error occurred";
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+            else
+            {
+                StatusMessage = "Incorrect password or email";
+            }
+        // }
+        // catch(Exception ex)
+        // {
+        //     StatusMessage = "An error occurred";
+        //     Console.WriteLine($"An error occurred: {ex.Message}");
+        // }
     }
 
     private sealed class InputModel
