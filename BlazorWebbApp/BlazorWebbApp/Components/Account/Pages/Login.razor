@@ -1,5 +1,4 @@
 ﻿@page "/Account/Login"
-@rendermode InteractiveServer
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -15,7 +14,7 @@
 
 <section class="signin">
     <div class="container">
-        <EditForm FormName="signinform" Model="SignInForm" OnValidSubmit="LoginUser" asp-route-returnUrl="@ReturnUrl" novalidate>
+        <EditForm Model="SignInForm" asp-route-returnUrl="@ReturnUrl" OnValidSubmit="LoginUser" FormName="signinform" novalidate>
 
             @if (!string.IsNullOrEmpty(@StatusMessage))
             {
@@ -29,11 +28,11 @@
             <div class="content">
                 <div class="form-email input-custom">
                     <label for="Email">Email</label>
-                    <InputText class="input" @bind-Value="SignInForm.Email" type="email" />
+                    <InputText type="email" @bind-Value="SignInForm.Email" class="input"/>
                 </div>
                 <div class="form.password input-custom">
                     <label for="Password">Password</label>
-                    <InputText class="input" @bind-Value="SignInForm.Password" type="password" />
+                    <InputText type="password" @bind-Value="SignInForm.Password" class="input" />
                 </div>
                 <div class="form-remember checkbox">
                     <div class="checkbox-group">
@@ -57,55 +56,46 @@
     private string? StatusMessage { get; set; }
 
     [SupplyParameterFromQuery]
-    private string? ReturnUrl { get; set; }
+    private string? ReturnUrl { get; set; } 
 
     [SupplyParameterFromForm]
-    public InputModel SignInForm { get; set; } = new();
-
-    public class InputModel
-    {
-
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email adress", Prompt = "Enter your email adress")]
-        public string Email { get; set; } = null!;
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Password", Prompt = "Enter your password")]
-        public string Password { get; set; } = null!;
-
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
-    }
+    private InputModel SignInForm { get; set; } = new();
 
     public async Task LoginUser()
     {
-        try
-        {
+        // "try catch" seems to be the reason the "Redirect" is not working, works fine without
+        // try
+        // {
             var result = await SignInManager.PasswordSignInAsync(SignInForm.Email, SignInForm.Password, SignInForm.RememberMe, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                if (!string.IsNullOrEmpty(ReturnUrl))
-                {
-                    // Redirect to the ReturnUrl if it's specified
-                    RedirectManager.RedirectTo(ReturnUrl);
-                }
-                else
-                {
-                    // Redirect to a default page if ReturnUrl is null or empty
-                    NavigationManager.NavigateTo("/");
-                }
+                RedirectManager.RedirectTo(ReturnUrl ?? "/"); // ReturnUrl still seems to always be null
             }
             else
             {
-                // If sign-in fails, set an appropriate status message
-                StatusMessage = "Wrong email or password";
+                StatusMessage = "Incorrect password or email";
             }
-        }
-        catch (Exception ex)
-        {
-            // Handle any exceptions that occur during the sign-in process
-            StatusMessage = "An error occurred";
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+        // }
+        // catch(Exception ex)
+        // {
+        //     StatusMessage = "An error occurred";
+        //     Console.WriteLine($"An error occurred: {ex.Message}");
+        // }
+    }
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email adress")]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; } = "";
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
     }
 }
