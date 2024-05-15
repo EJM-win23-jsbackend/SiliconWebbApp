@@ -1,0 +1,20 @@
+﻿.signin .container {
+  margin-top: 4rem;
+  max-width: 40%;
+}
+.signin .container form .content {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+.signin .container form .content a {
+  text-align: center;
+}
+.signin .container form .input-validation-error {
+  box-shadow: none;
+  color: black;
+}
+.signin .container form .input-validation-error::placeholder {
+  color: black;
+}

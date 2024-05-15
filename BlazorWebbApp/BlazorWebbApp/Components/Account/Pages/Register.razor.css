@@ -10,8 +10,9 @@
 .signup .container p {
   margin-bottom: 3rem;
 }
-.signup .container form .input-group {
+.signup .container form .input-custom {
   display: grid;
+  border-radius: 0.4rem !important;
 }
 .signup .container form label {
   margin-bottom: 7px;
