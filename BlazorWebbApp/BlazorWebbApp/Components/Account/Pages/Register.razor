@@ -34,27 +34,27 @@
             <p>Already have an account? <a href="account/login">Sign in here.</a></p>
 
             <div class="content">
-                <div id="form-firstname" class="input-group">
+                <div id="form-firstname" class="input-custom">
                     <label for="Firstname">First name</label>
                     <InputText class="input" @bind-Value="SignUpForm.FirstName"/>
                     <ValidationMessage For="() => SignUpForm.FirstName" class="field-validation-error" />
                 </div>
-                <div id="form-lastname" class="input-group">
+                <div id="form-lastname" class="input-custom">
                     <label for="Lastname">Last name</label>
                     <InputText class="input" @bind-Value="SignUpForm.LastName" />
                     <ValidationMessage For="() => SignUpForm.LastName" class="field-validation-error" />
                 </div>
-                <div id="form-email" class="input-group">
+                <div id="form-email" class="input-custom">
                     <label for="Email">Email</label>
                     <InputText class="input" @bind-Value="SignUpForm.Email" type="email" />
                     <ValidationMessage For="() => SignUpForm.Email" class="field-validation-error" />
                 </div>
-                <div id="form-password" class="input-group">
+                <div id="form-password" class="input-custom">
                     <label>Password</label>
                     <InputText class="input" @bind-Value="SignUpForm.Password" type="password" />
                     <ValidationMessage For="() => SignUpForm.Password" class="field-validation-error" />
                 </div>
-                <div id="form-confirm" class="input-group">
+                <div id="form-confirm" class="input-custom">
                     <label for="ConfirmPassword">Confirm password</label>
                     <InputText class="input" @bind-Value="SignUpForm.ConfirmPassword" type="password" />
                     <ValidationMessage For="() => SignUpForm.Password" class="field-validation-error" />
