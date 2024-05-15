@@ -76,7 +76,7 @@
             {
                 if (!string.IsNullOrEmpty(ReturnUrl))
                 {
-                     NavigationManager.NavigateTo(ReturnUrl ?? "/"); // not working, the ReturnUrl is always null before using OnInitatilized()
+                     NavigationManager.NavigateTo(ReturnUrl ?? "/"); // not working, the ReturnUrl is always null, (or was, before using OnInitatilized())
                 }
                 else { NavigationManager.NavigateTo("/"); } // not working, trows an exception
             }
@@ -84,6 +84,7 @@
         }
         catch (Exception ex)
         {
+            NavigationManager.NavigateTo("/"); // this works but may not be the best solution
             StatusMessage = "An error occurred";
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
