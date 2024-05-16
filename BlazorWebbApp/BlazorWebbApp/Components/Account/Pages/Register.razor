@@ -85,16 +85,16 @@
 
     public async Task OnValidSubmit(EditContext editContext)
     {
-        var user = new ApplicationUser
-        {
-            UserProfile = new UserProfile
-            {
-                FirstName = SignUpForm.FirstName,
-                LastName = SignUpForm.LastName
-            },
-            UserName = SignUpForm.Email,
-            Email = SignUpForm.Email
-        };
+        // var user = new ApplicationUser
+        // {
+        //     UserProfile = new UserProfile
+        //     {
+        //         FirstName = SignUpForm.FirstName,
+        //         LastName = SignUpForm.LastName
+        //     },
+        //     UserName = SignUpForm.Email,
+        //     Email = SignUpForm.Email
+        // };
 
         try
         {
@@ -105,12 +105,12 @@
                 return;
             }
 
-            var result = await UserManager.CreateAsync(user, SignUpForm.Password);
-            if (!result.Succeeded)
-            {
-                StatusMessage = "Unable to create account, please try again.";
-                return;
-            }  
+            // var result = await UserManager.CreateAsync(user, SignUpForm.Password);
+            // if (!result.Succeeded)
+            // {
+            //     StatusMessage = "Unable to create account, please try again.";
+            //     return;
+            // }  
         }
         catch (Exception ex)
         {
@@ -118,8 +118,8 @@
             return;
         };
 
-        RedirectManager.RedirectTo("Account/Login");
-        await SignInManager.SignInAsync(user, isPersistent: false);
+        // RedirectManager.RedirectTo("Account/Login");
+        // await SignInManager.SignInAsync(user, isPersistent: false);
     }
 
     public class SignUpModel

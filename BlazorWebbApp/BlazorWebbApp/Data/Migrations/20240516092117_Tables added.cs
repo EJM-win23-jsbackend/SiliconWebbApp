@@ -5,19 +5,39 @@
 namespace BlazorWebbApp.Migrations
 {
     /// <inheritdoc />
-    public partial class UserProfileandUserAddresstablesadded : Migration
+    public partial class Tablesadded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "UserAddressId",
+                name: "Biography",
                 table: "AspNetUsers",
-                type: "nvarchar(450)",
+                type: "nvarchar(max)",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "UserProfileId",
+                name: "FirstName",
+                table: "AspNetUsers",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "LastName",
+                table: "AspNetUsers",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<string>(
+                name: "ProfileImage",
+                table: "AspNetUsers",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "UserAddressId",
                 table: "AspNetUsers",
                 type: "nvarchar(450)",
                 nullable: true);
@@ -37,43 +57,16 @@ namespace BlazorWebbApp.Migrations
                     table.PrimaryKey("PK_UserAddresses", x => x.Id);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "UserProfiles",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_UserAddressId",
                 table: "AspNetUsers",
                 column: "UserAddressId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_UserProfileId",
-                table: "AspNetUsers",
-                column: "UserProfileId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_UserAddresses_UserAddressId",
                 table: "AspNetUsers",
                 column: "UserAddressId",
                 principalTable: "UserAddresses",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_UserProfiles_UserProfileId",
-                table: "AspNetUsers",
-                column: "UserProfileId",
-                principalTable: "UserProfiles",
                 principalColumn: "Id");
         }
 
@@ -84,30 +77,31 @@ namespace BlazorWebbApp.Migrations
                 name: "FK_AspNetUsers_UserAddresses_UserAddressId",
                 table: "AspNetUsers");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_UserProfiles_UserProfileId",
-                table: "AspNetUsers");
-
             migrationBuilder.DropTable(
                 name: "UserAddresses");
-
-            migrationBuilder.DropTable(
-                name: "UserProfiles");
 
             migrationBuilder.DropIndex(
                 name: "IX_AspNetUsers_UserAddressId",
                 table: "AspNetUsers");
 
-            migrationBuilder.DropIndex(
-                name: "IX_AspNetUsers_UserProfileId",
+            migrationBuilder.DropColumn(
+                name: "Biography",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "FirstName",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "LastName",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "ProfileImage",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
                 name: "UserAddressId",
-                table: "AspNetUsers");
-
-            migrationBuilder.DropColumn(
-                name: "UserProfileId",
                 table: "AspNetUsers");
         }
     }
