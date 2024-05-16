@@ -1,0 +1,44 @@
+﻿@attribute [StreamRendering] 
+
+@using BlazorWebbApp.Data
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+@if(user == null)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="profile">
+
+        <img src="/images/profileimage.svg" alt="profile image">
+
+        <h5>@user.FirstName@user.LastName</h5>
+        <p>@user.Email</p>
+
+    </div>
+}
+
+
+
+@code {
+
+    private ApplicationUser user = default!;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+    }
+}
