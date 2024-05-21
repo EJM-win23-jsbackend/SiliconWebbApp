@@ -1,37 +1,42 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using BlazorWebbApp.Data
 
+@inject NavigationManager Navigation
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Profile</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Email">Email</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/ChangePassword">Password</NavLink>
-    </li>
-    @if (hasExternalLogins)
-    {
-        <li class="nav-item">
-            <NavLink class="nav-link" href="Account/Manage/ExternalLogins">External logins</NavLink>
-        </li>
-    }
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication">Two-factor authentication</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/PersonalData">Personal data</NavLink>
-    </li>
-</ul>
+@rendermode InteractiveServer
+
+<AuthorizeView>
+    <Authorized>
+        <div class="sidebar">
+            <div class="sidebar">
+                <a href="account/manage" class="btn btn-theme" Match="NavLinkMatch.All"><i class="fa-solid fa-gear"></i><span class="span">Account Details</span></a>
+                <a class="btn btn-transparent" href="Account/Manage/ChangePassword"><i class="fa-solid fa-lock"></i><span class="span">Security</span></a>
+                <a class="btn btn-transparent" href="account/notifications"><i class="fa-regular fa-bell"></i><span class="span">Notifications</span></a>
+                <a class="btn btn-transparent" href="account/messages"><i class="fa-regular fa-message"></i><span class="span">Messages</span></a>
+                <a class="btn btn-transparent" href="courses/savedcourses"><i class="fa-regular fa-bookmark"></i><span class="span">Saved Courses</span></a>
+                <a class="btn btn-transparent" @onclick="SignOutbtn">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span class="span">Sign Out</span>
+                </a>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
-    private bool hasExternalLogins;
 
-    protected override async Task OnInitializedAsync()
+    public async Task SignOutbtn()
     {
-        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+        try
+        {
+            Navigation.NavigateTo("/Logout", true);
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine("Error when trying to sign out...." + ex.Message);
+        }
+
     }
 }

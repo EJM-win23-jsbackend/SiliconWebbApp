@@ -1,0 +1,120 @@
+﻿.account-details .container {
+  padding: 3rem;
+}
+.account-details .container .aside {
+  display: grid;
+  float: left;
+  padding-right: 1rem;
+  padding-top: 2rem;
+  width: 25%;
+}
+.account-details .container .aside .profile {
+  text-align: center;
+}
+.account-details .container .aside .profile img {
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.account-details .container .aside .profile form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.account-details .container .aside .profile form .btn-transparent {
+  padding: 0;
+  margin-top: 5px;
+  border-radius: 50%;
+  width: 10%;
+}
+.account-details .container .aside .profile form .btn-transparent i {
+  padding: 5px;
+}
+.account-details .container .aside .profile p {
+  color: var(--color-gray-700);
+  margin-bottom: 2rem;
+}
+.account-details .container .account-forms {
+  display: grid;
+  padding-left: 7rem;
+  padding-top: 3rem;
+  border-top: none;
+  border-left: 1px solid var(--color-gray-400);
+}
+.account-details .container .account-forms h5 {
+  color: var(--color-theme);
+}
+.account-details .container .account-forms form {
+  width: 100%;
+}
+.account-details .container .account-forms form .account-profileinfo {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "firstname lastname" "email phone" "bio bio" "btngray btntheme";
+}
+.account-details .container .account-forms form .account-profileinfo #form-firstname {
+  grid-area: firstname;
+}
+.account-details .container .account-forms form .account-profileinfo #form-lastname {
+  grid-area: lastname;
+}
+.account-details .container .account-forms form .account-profileinfo #form-email {
+  grid-area: email;
+}
+.account-details .container .account-forms form .account-profileinfo #form-bio {
+  grid-area: bio;
+}
+.account-details .container .account-forms form .account-profileinfo #form-button-gray {
+  grid-area: btngray;
+}
+.account-details .container .account-forms form .account-profileinfo #form-button-gray {
+  grid-area: btntheme;
+}
+.account-details .container .account-forms form .account-profileinfo .bio {
+  resize: none;
+  padding: 0.5rem;
+  border-radius: 8px !important;
+  border: 1px solid var(--color-gray-500);
+}
+.account-details .container .account-forms form .account-profileinfo .bio:focus {
+  outline: 1px solid var(--color-gray-800);
+}
+.account-details .container .account-forms form .account-profileinfo .menu-buttons {
+  display: flex;
+  justify-content: start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.account-details .container .account-forms form .account-address {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "addressline-1 addressline-1" "addressline-2 addressline-2" "postalcode city" "btn-gray btn-theme";
+}
+.account-details .container .account-forms form .account-address #form-addressline-1 {
+  grid-area: addressline-1;
+}
+.account-details .container .account-forms form .account-address #form-addressline-2 {
+  grid-area: addressline-2;
+}
+.account-details .container .account-forms form .account-address #form-postalcode {
+  grid-area: postalcode;
+}
+.account-details .container .account-forms form .account-address #form-city {
+  grid-area: city;
+}
+.account-details .container .account-forms form .account-address #form-button-gray {
+  grid-area: btngray;
+}
+.account-details .container .account-forms form .account-address #form-button-gray {
+  grid-area: btntheme;
+}
+.account-details .container .account-forms form .account-address .menu-buttons {
+  display: flex;
+  justify-content: start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}

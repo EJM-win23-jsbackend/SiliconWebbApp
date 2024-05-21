@@ -22,5 +22,17 @@
   {
     "outputFile": "Components/Account/Pages/Login.razor.css",
     "inputFile": "Components/Account/Pages/Login.razor.scss"
+  },
+  {
+    "outputFile": "Components/Account/Shared/ManageLayout.razor.css",
+    "inputFile": "Components/Account/Shared/ManageLayout.razor.scss"
+  },
+  {
+    "outputFile": "Components/Account/Shared/ManageNavMenu.razor.css",
+    "inputFile": "Components/Account/Shared/ManageNavMenu.razor.scss"
+  },
+  {
+    "outputFile": "Components/Account/Pages/Manage/Index.razor.css",
+    "inputFile": "Components/Account/Pages/Manage/Index.razor.scss"
   }
 ]

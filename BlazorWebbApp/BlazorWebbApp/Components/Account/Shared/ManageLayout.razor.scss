@@ -1,0 +1,156 @@
+.account-details {
+
+    .container {
+        padding: 3rem;
+
+
+        .aside {
+            display: grid;
+            float: left;
+            padding-right: 1rem;
+            padding-top: 2rem;
+            width: 25%;
+
+
+            .profile {
+                text-align: center;
+                
+
+                img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                form {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .btn-transparent {
+                        padding: 0;
+                        margin-top: 5px;
+                        border-radius: 50%;
+                        width: 10%;
+
+                        i {
+                            padding: 5px;
+                        }
+                    }
+                }
+
+                p {
+                    color: var(--color-gray-700);
+                    margin-bottom: 2rem;
+                }
+            }
+        }
+
+        .account-forms {
+            display: grid;
+            padding-left: 7rem;
+            padding-top: 3rem;
+            border-top: none;
+            border-left: 1px solid var(--color-gray-400);
+
+
+            h5 {
+                color: var(--color-theme);
+            }
+
+            form {
+                width: 100%;
+
+                .account-profileinfo {
+                    display: grid;
+                    gap: 1.5rem;
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-areas: "firstname lastname" "email phone" "bio bio" "btngray btntheme";
+
+
+                    #form-firstname {
+                        grid-area: firstname;
+                    }
+
+                    #form-lastname {
+                        grid-area: lastname;
+                    }
+
+                    #form-email {
+                        grid-area: email;
+                    }
+
+                    #form-bio {
+                        grid-area: bio;
+                    }
+
+                    #form-button-gray {
+                        grid-area: btngray;
+                    }
+
+                    #form-button-gray {
+                        grid-area: btntheme;
+                    }
+
+                    .bio {
+                        resize: none;
+                        padding: 0.5rem;
+                        border-radius: 8px !important;
+                        border: 1px solid var(--color-gray-500);
+
+                        &:focus {
+                            outline: 1px solid var(--color-gray-800);
+                        }
+                    }
+
+                    .menu-buttons {
+                        display: flex;
+                        justify-content: start;
+                        gap: 1rem;
+                        margin-bottom: 1.5rem;
+                    }
+                }
+
+                .account-address {
+                    display: grid;
+                    gap: 1.5rem;
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-areas: "addressline-1 addressline-1" "addressline-2 addressline-2" "postalcode city" "btn-gray btn-theme";
+
+                    #form-addressline-1 {
+                        grid-area: addressline-1;
+                    }
+
+                    #form-addressline-2 {
+                        grid-area: addressline-2;
+                    }
+
+                    #form-postalcode {
+                        grid-area: postalcode;
+                    }
+
+                    #form-city {
+                        grid-area: city;
+                    }
+
+                    #form-button-gray {
+                        grid-area: btngray;
+                    }
+
+                    #form-button-gray {
+                        grid-area: btntheme;
+                    }
+
+                    .menu-buttons {
+                        display: flex;
+                        justify-content: start;
+                        gap: 1rem;
+                        margin-bottom: 1.5rem;
+                    }
+                }
+            }
+        }
+    }
+}
