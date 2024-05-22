@@ -3,75 +3,242 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using BlazorWebbApp.Data
+@using Microsoft.EntityFrameworkCore
+@using System.Text.Json
+@using System.Text
+
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
+@inject HttpClient Http
 
-<PageTitle>Profile</PageTitle>
-
-<h3>Profile</h3>
+<PageTitle>Account details</PageTitle>
 <StatusMessage />
 
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                <label for="username" class="form-label">Username</label>
+<div class="account-forms">
+    <EditForm FormName="accountprofileform" Model="AccountProfileForm" method="post" OnValidSubmit="OnValidProfileSubmitAsync" novalidate>
+        <DataAnnotationsValidator />
+        
+        @if (!string.IsNullOrEmpty(@StatusMessage))
+        {
+            <div class="alert alert-info">
+                @StatusMessage
             </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
+        }
+
+        <h2>Account Details</h2>
+        <h5>Basic Info</h5>
+        <div class="account-profileinfo">
+            <div id="form-firstname" class="input-custom">
+                <label for="FirstName">Firstname</label>
+                <InputText class="input" @bind-Value="AccountProfileForm.FirstName" />
+                <ValidationMessage For="() => AccountProfileForm.FirstName" class="field-validation-error" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
-    </div>
+            <div id="form-lastname" class="input-custom">
+                <label for="LastName">Lastname</label>
+                <InputText class="input" @bind-Value="AccountProfileForm.LastName" />
+                <ValidationMessage For="() => AccountProfileForm.LastName" class="field-validation-error" />
+            </div>
+            <div id="form-email" class="input-custom">
+                <label for="Email">Email</label>
+                <InputText class="input" @bind-Value="AccountProfileForm.Email" />
+                <ValidationMessage For="() => AccountProfileForm.Email" class="field-validation-error" />
+            </div>
+            <div id="form-phone" class="input-custom">
+                <label for="Phone">Phone</label>
+                <InputText class="input" @bind-Value="AccountProfileForm.Phone" />
+                <ValidationMessage For="() => AccountProfileForm.Phone" class="field-validation-error" />
+            </div>
+            <div id="form-bio" class="input-custom">
+                <label for="Biography">Bio <span>(optional)</span></label>
+                <InputTextArea class="bio" @bind-Value="AccountProfileForm.Biography" rows="4" cols="50" style="resize: none; padding: 0.5rem; border-radius: 8px; border: 2px solid var(--color-gray-300); outline: none"
+                ></InputTextArea>
+            </div>
+            <div class="menu-buttons">
+                <button id="form-btn-gray" class="btn btn-gray"><span>Cancel</span></button>
+                <button id="form-btn-theme" class="btn btn-theme" type="submit"><span>Save changes</span></button>
+            </div>
+        </div>
+    </EditForm>
+    <EditForm FormName="accountaddressform" Model="AccountAddressForm" method="post" OnValidSubmit="OnValidAddressSubmitAsync" novalidate>
+        <DataAnnotationsValidator />
+        <hr>
+        <h5>Address</h5>
+        <div class="account-address">
+            <div id="form-addressline-1" class="input-custom">
+                <label for="Addressline_1">Address line 1</label>
+                <InputText class="input" @bind-Value="AccountAddressForm.Addressline_1" />
+                <ValidationMessage For="() => AccountAddressForm.Addressline_1" class="field-validation-error" />
+            </div>
+            <div id="form-addressline-2" class="input-custom">
+                <label for="Addressline_2">Address line 2 (optional) </label>
+                <InputText class="input" @bind-Value="AccountAddressForm.Addressline_2" />
+                <ValidationMessage For="() => AccountAddressForm.Addressline_2" class="field-validation-error" />
+            </div>
+            <div id="form-postalcode" class="input-custom">
+                <label for="PostalCode">Postalcode</label>
+                <InputText class="input" @bind-Value="AccountAddressForm.PostalCode" />
+                <ValidationMessage For="() => AccountAddressForm.PostalCode" class="field-validation-error" />
+            </div>
+            <div id="form-city" class="input-custom">
+                <label for="City">City</label>
+                <InputText class="input" @bind-Value="AccountAddressForm.City" />
+                <ValidationMessage For="() => AccountAddressForm.City" class="field-validation-error" />
+            </div>
+            <div class="menu-buttons">
+                <button id="form-btn-gray" class="btn btn-gray"><span>Cancel</span></button>
+                <button id="form-btn-theme" class="btn btn-theme" type="submit"><span>Save changes</span></button>
+            </div>
+        </div>
+    </EditForm>
 </div>
 
+
 @code {
-    private ApplicationUser user = default!;
-    private string? username;
-    private string? phoneNumber;
+
+    public ApplicationUser? User { get; set; }
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    [SupplyParameterFromQuery]
+    public string? StatusMessage { get; set; }
+
+
+    public AccountProfileModel AccountProfileForm { get; set; } = new AccountProfileModel();
+
+
+    public AccountAddressModel AccountAddressForm { get; set; } = new AccountAddressModel();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
-
-        Input.PhoneNumber ??= phoneNumber;
-    }
-
-    private async Task OnValidSubmitAsync()
-    {
-        if (Input.PhoneNumber != phoneNumber)
+        try
         {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
+            var user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+
+            if (user != null)
             {
-                RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
+
+                User = user;
+
+                AccountProfileForm = new AccountProfileModel
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email!,
+                        Phone = user.PhoneNumber,
+                        Biography = user.Biography
+                    }; 
+
+                if(user.UserAddress != null)
+                {
+                    AccountAddressForm = new AccountAddressModel
+                    {
+                        Addressline_1 = user.UserAddress!.AddressLine_1,
+                        Addressline_2 = user.UserAddress.AddressLine_2,
+                        PostalCode = user.UserAddress.PostalCode,
+                        City = user.UserAddress.City
+                    };
+                }
+            }
+            else
+            {
+                StatusMessage = "connection failed";
+                return;
             }
         }
+        catch
+        {
+            StatusMessage = "An error occured";
+            return;
+        }
 
-        await SignInManager.RefreshSignInAsync(user);
-        RedirectManager.RedirectToCurrentPageWithStatus("Your profile has been updated", HttpContext);
     }
 
-    private sealed class InputModel
+    public async Task OnValidProfileSubmitAsync()
     {
-        [Phone]
-        [Display(Name = "Phone number")]
-        public string? PhoneNumber { get; set; }
+
+        var userId = User.Id;
+
+        var json = JsonSerializer.Serialize(AccountProfileForm);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+
+        Console.WriteLine($"send PUT request JSON: {json}");
+
+        var result = await Http.PutAsync($"http://localhost:7108/api/user/{userId}", content);
+        if (result.IsSuccessStatusCode)
+        {
+            StatusMessage = "Your profile is updated!";
+            await SignInManager.RefreshSignInAsync(User);
+        }
+        else
+        {
+            StatusMessage = "Failed to update..";
+        }
     }
+
+    public async Task OnValidAddressSubmitAsync()
+    {
+
+        
+    }
+
+
+    public class AccountProfileModel
+    {
+
+        [Display(Name = "First name", Prompt = "Enter your first name")]
+        [Required(ErrorMessage = "First name is required")]
+        public string FirstName { get; set; } = null!;
+
+
+        [Display(Name = "last name", Prompt = "Enter your last name")]
+        [Required(ErrorMessage = "Last name is required")]
+        public string LastName { get; set; } = null!;
+
+
+        [Display(Name = "Email address", Prompt = "Enter your email address")]
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage = "Email is required")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Your email address is invalid")]
+        public string Email { get; set; } = null!;
+
+
+        [Display(Name = "Phone", Prompt = "Enter your phone")]
+        [DataType(DataType.PhoneNumber)]
+        public string? Phone { get; set; }
+
+        [Display(Name = "Bio", Prompt = "Add a short bio...")]
+        [DataType(DataType.MultilineText)]
+        public string? Biography { get; set; }
+    }
+
+
+    public class AccountAddressModel
+    {
+
+            [Display(Name = "Address line 1", Prompt = "Enter your address line")]
+            [Required(ErrorMessage = "Address is required")]
+            public string Addressline_1 { get; set; } = null!;
+
+
+            [Display(Name = "Address line 2", Prompt = "Enter your second address line")]
+            public string? Addressline_2 { get; set; }
+
+
+            [Display(Name = "PostalCode", Prompt = "Enter your postalCode")]
+            [Required(ErrorMessage = "PostalCode is required")]
+            [DataType(DataType.PostalCode)]
+            public string PostalCode { get; set; } = null!;
+
+
+            [Display(Name = "City", Prompt = "Enter your city")]
+            [Required(ErrorMessage = "City is required")]
+            public string City { get; set; } = null!;
+    }
+
+
 }

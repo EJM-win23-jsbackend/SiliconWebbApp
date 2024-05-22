@@ -1,0 +1,97 @@
+.account-forms {
+    display: grid;
+    padding-left: 4rem;
+    padding-top: 1rem;
+    border-top: none;
+
+    h5 {
+        margin-top: 2rem;
+        color: var(--color-theme);
+    }
+
+    .input-custom {
+        border-radius: 0.4rem;
+    }
+
+    form {
+        width: 100%;
+
+        .account-profileinfo {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas: "firstname lastname" "email phone" "bio bio" "btngray btntheme";
+
+            #form-firstname {
+                grid-area: firstname;
+            }
+
+            #form-lastname {
+                grid-area: lastname;
+            }
+
+            #form-email {
+                grid-area: email;
+            }
+
+            #form-bio {
+                grid-area: bio;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #form-button-gray {
+                grid-area: btngray;
+            }
+
+            #form-button-gray {
+                grid-area: btntheme;
+            }
+
+            .menu-buttons {
+                display: flex;
+                justify-content: start;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        .account-address {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: 1fr 1fr;
+            grid-template-areas: "addressline-1 addressline-1" "addressline-2 addressline-2" "postalcode city" "btn-gray btn-theme";
+
+            #form-addressline-1 {
+                grid-area: addressline-1;
+            }
+
+            #form-addressline-2 {
+                grid-area: addressline-2;
+            }
+
+            #form-postalcode {
+                grid-area: postalcode;
+            }
+
+            #form-city {
+                grid-area: city;
+            }
+
+            #form-button-gray {
+                grid-area: btngray;
+            }
+
+            #form-button-gray {
+                grid-area: btntheme;
+            }
+
+            .menu-buttons {
+                display: flex;
+                justify-content: start;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+    }
+}
