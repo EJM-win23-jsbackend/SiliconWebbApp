@@ -34,5 +34,9 @@
   {
     "outputFile": "Components/Account/Pages/Manage/Index.razor.css",
     "inputFile": "Components/Account/Pages/Manage/Index.razor.scss"
+  },
+  {
+    "outputFile": "Components/Components/AccountInfoComponent.razor.css",
+    "inputFile": "Components/Components/AccountInfoComponent.razor.scss"
   }
 ]
