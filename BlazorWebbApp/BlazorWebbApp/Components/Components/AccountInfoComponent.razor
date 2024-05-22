@@ -1,13 +1,14 @@
-﻿@attribute [StreamRendering] 
+﻿
+@attribute [StreamRendering] 
 
 @using BlazorWebbApp.Data
 @using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject AuthenticationStateProvider AuthenticationState
 
-
-@if(user == null)
+ @if (user == null)
 {
     <div class="d-flex justify-content-center">
         <div class="spinner-border" role="status">
@@ -17,28 +18,35 @@
 }
 else
 {
-    <div class="profile">
+    <AuthorizeView>
+        <Authorized>
+            <div class="profile">
+                <div class="content">
+                    <img src="/images/profileimage.svg" alt="profile image">
 
-        <img src="/images/profileimage.svg" alt="profile image">
-
-        <h5>@user.FirstName@user.LastName</h5>
-        <p>@user.Email</p>
-
-    </div>
+                    <h5>@user.FirstName @user.LastName</h5>
+                    <p>@user.Email</p>
+                </div>
+            </div>
+        </Authorized>
+    </AuthorizeView>
 }
-
 
 
 @code {
 
-    private ApplicationUser user = default!;
-
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    private ApplicationUser? user;
 
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+
+        var authState = await AuthenticationState.GetAuthenticationStateAsync();
+        var userPrincipal = authState.User;
+
+        if(userPrincipal.Identity != null && userPrincipal.Identity.IsAuthenticated)
+        {
+            user = await UserManager.GetUserAsync(userPrincipal);
+        }
     }
 }
