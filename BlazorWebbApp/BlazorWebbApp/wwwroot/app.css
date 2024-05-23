@@ -777,9 +777,6 @@ h1 {
   gap: 12px;
   min-height: 34px;
   transition: background-color ease-in-out 120ms;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .btn-theme {
@@ -856,7 +853,7 @@ h1 {
   height: 0;
 }
 .btn-switch .switch input:checked + .slider {
-  background-color: var(--color-theme);
+  background-color: var(--color-success);
 }
 .btn-switch .switch input:focus + .slider {
   box-shadow: 0 0 1px var(--color-theme);
@@ -1645,17 +1642,19 @@ h1 {
   gap: 1.8rem;
 }
 
-.field-validation-error {
-  color: var(--color-danger);
-  font-size: 0.9rem;
-  margin-left: 0.2rem;
-}
-
 .error {
   color: var(--color-danger);
   opacity: 1;
   transition: ease-out 1200ms;
   font-size: 0.9rem;
+}
+.error .validation-errors {
+  margin: 0;
+  padding: 0;
+}
+.error .validation-message {
+  text-decoration: none;
+  list-style: none;
 }
 
 .center {

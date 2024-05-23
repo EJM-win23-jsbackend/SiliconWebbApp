@@ -11,9 +11,6 @@
     gap: 12px;
     min-height: 34px;
     transition: background-color ease-in-out 120ms;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .btn-theme {
@@ -96,7 +93,7 @@
             height: 0;
 
             &:checked + .slider {
-                background-color: var(--color-theme);
+                background-color: var(--color-success);
             }
 
             &:focus + .slider {

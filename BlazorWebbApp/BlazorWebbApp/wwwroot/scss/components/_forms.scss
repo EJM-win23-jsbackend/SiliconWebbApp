@@ -5,17 +5,21 @@
     gap: 1.8rem;
 }
 
-.field-validation-error {
-    color: var(--color-danger);
-    font-size: 0.9rem;
-    margin-left: 0.2rem;
-}
-
 .error {
     color: var(--color-danger);
     opacity: 1;
     transition: ease-out 1200ms;
     font-size: 0.9rem;
+
+    .validation-errors {
+        margin: 0;
+        padding: 0;
+    }
+
+    .validation-message {
+        text-decoration: none;
+        list-style: none;
+    }
 }
 
 .center

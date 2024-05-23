@@ -1,6 +1,7 @@
 using BlazorWebbApp.Components;
 using BlazorWebbApp.Components.Account;
 using BlazorWebbApp.Data;
+using BlazorWebbApp.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<SubscriberServices>();
 
 
 builder.Services.AddAuthentication(options =>

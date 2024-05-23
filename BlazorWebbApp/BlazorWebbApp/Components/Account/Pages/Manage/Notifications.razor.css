@@ -59,8 +59,3 @@
     margin-top: 8rem;
   }
 }
-@media (min-width: 992px) {
-  .notificationForm {
-    margin-left: 6rem;
-  }
-}
