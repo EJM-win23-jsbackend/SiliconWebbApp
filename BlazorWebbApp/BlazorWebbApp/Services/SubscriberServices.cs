@@ -22,7 +22,7 @@ namespace BlazorWebbApp.Services
         {
             try 
             {
-                var result = await _httpClient.PostAsJsonAsync("http://localhost:7221/api/Subscribe", subscribe);
+                var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("SubscribeFunction"), subscribe);
 
                 var content = await result.Content.ReadAsStringAsync();
 
@@ -50,7 +50,7 @@ namespace BlazorWebbApp.Services
         {
             try
             {
-                var result = await _httpClient.PostAsJsonAsync("http://localhost:7221/api/Unsubscribe", subscribe);
+                var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("UnsubscribeFunction"), subscribe);
 
                 if (result.IsSuccessStatusCode)
                 {
@@ -82,7 +82,7 @@ namespace BlazorWebbApp.Services
         {
             try
             {
-                var result = await _httpClient.PostAsJsonAsync($"http://localhost:7221/api/GetASubscriber?userId", userId);
+                var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("GetASubscriberFunction"), userId);
 
                 var content = await result.Content.ReadAsStringAsync();
 
