@@ -21,24 +21,25 @@
 <section>
 
     <EditForm FormName="Subscribe" Model="@subscriberModel" OnValidSubmit="Subscribe"  novalidate>
-        <DataAnnotationsValidator />
 
     <div class="notificationForm">
         <div class="headlinesNotifications">
             <h2 class="h2">Notifications</h2>
             @if (!string.IsNullOrEmpty(Message))
             {
-                <span class="error">@Message</span>
+                <span class="@(isError ? "error" : "success")">@Message</span>
             }
             </div>
         <div class="PreferredEmail">
             <b>Preferred email for notification</b>
             <div class="input input-theme input-notification">
+@*                 <DataAnnotationsValidator /> *@
                 <InputText @bind-Value="subscriberModel.Email" placeholder="Please enter an email" />
             </div>
-                <span class="error">
-                    <ValidationSummary />
-                </span>
+            @if (!string.IsNullOrEmpty(validationMessage))
+            {
+                    <span class="error">@validationMessage</span>
+            }
             </div>
 
         <div>
@@ -83,6 +84,8 @@
     [SupplyParameterFromQuery]
     private string Message { get; set; } = string.Empty;
 
+    private string validationMessage { get; set; } = string.Empty;
+
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
@@ -92,6 +95,8 @@
     public SubscriberModel subscriberModel { get; set; } = new SubscriberModel();
 
     public SubscribeEntity subscribeEntity { get; set; } = new SubscribeEntity();
+
+    private bool isError = true;
 
     protected async override Task OnInitializedAsync()
     {
@@ -127,42 +132,59 @@
         {
             string emailRegEx = @"^[a-zA-Z]{2,}@[a-zA-Z]{2,}\.[a-zA-Z]{2,}$";
 
-            if (!string.IsNullOrEmpty(subscriberModel.Email) && Regex.IsMatch(subscriberModel.Email, emailRegEx))
+            if (!string.IsNullOrEmpty(subscriberModel.Email))
             {
-                try
+                if (Regex.IsMatch(subscriberModel.Email, emailRegEx))
                 {
-                    var subscriberEntity = new SubscribeEntity
+                    validationMessage = string.Empty;
+
+                    try
+                    {
+                        var subscriberEntity = new SubscribeEntity
+                            {
+                                Id = "",
+                                Email = subscriberModel.Email,
+                                UserId = User.Id
+                            };
+
+                        var result = await _subscribeServices.SubscribeAsync(subscriberEntity);
+
+                        if (result is OkObjectResult okObjectResult)
                         {
-                            Id = "",
-                            Email = subscriberModel.Email,
-                            UserId = User.Id
-                        };
+                            isError = false;
+                            var responseObject = okObjectResult.Value as dynamic;
+                            Message = responseObject.Message;
 
-                    var result = await _subscribeServices.SubscribeAsync(subscriberEntity);
-
-                    if (result is OkObjectResult okObjectResult)
-                    {
-                        var responseObject = okObjectResult.Value as dynamic;
-                        Message = responseObject.Message;
+                        }
+                        else if (result is ConflictObjectResult objectResult)
+                        {
+                            isError = true;
+                            var responseObject = objectResult.Value as dynamic;
+                            Message = responseObject.Message;
+                        }
+                        else
+                        {
+                            isError = true;
+                            Message = "Something went wrong...";
+                        }
                     }
-                    else if (result is UnauthorizedObjectResult objectResult)
+                    catch (Exception ex)
                     {
-                        var responseObject = objectResult.Value as dynamic;
-                        Message = responseObject.Message;
-                    }
-                    else
-                    {
-                        Message = "Something went wrong...";
+                        Debug.WriteLine("Subscribe ::" + ex.Message);
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Debug.WriteLine("Subscribe ::" + ex.Message);
+                    isError = true;
+                    Message = string.Empty;
+                    validationMessage = "You must enter a valid email";
                 }
             }
             else
             {
-                Message = "You must enter a valid email";
+                isError = true;
+                Message = string.Empty;
+                validationMessage = "An valid email is required";
             }
         }
         else
@@ -176,26 +198,31 @@
                         UserId = User!.Id
 
                     };
-
+                validationMessage = string.Empty;
                 var result = await _subscribeServices.UnsubscribeAsync(subscribeEntity);
 
                 if (result is OkObjectResult okObjectResult)
                 {
+                    isError = false;
                     var responseObject = okObjectResult.Value as dynamic;
                     Message = responseObject.Message;
+
                 }
                 else if (result is UnauthorizedObjectResult objectResult)
                 {
+                    isError = true;
                     var responseObject = objectResult.Value as dynamic;
                     Message = responseObject.Message;
                 }
                 else if(result is NotFoundObjectResult objectNotfoundResult)
                 {
+                    isError = true;
                     var responseObject = objectNotfoundResult.Value as dynamic;
-                    Message = responseObject.Message;
+                    Message = "You're currently isn't up for subscription...";
                 }
                 else
                 {
+                    isError = true;
                     Message = "Something went wrong...";
                 }
             }

@@ -1,4 +1,5 @@
-﻿using BlazorWebbApp.Entities;
+﻿using Azure;
+using BlazorWebbApp.Entities;
 using BlazorWebbApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.Json;
@@ -34,7 +35,7 @@ namespace BlazorWebbApp.Services
                 }
                 if(result.StatusCode == System.Net.HttpStatusCode.Conflict)
                 {
-                    return new UnauthorizedObjectResult(new { Status = 409, Message = $"{json!.Message}"});
+                    return new ConflictObjectResult(new { Status = 409, Message = $"{json!.Message}"});
                 }
 
                 return new BadRequestObjectResult(new { Status = 400, Message = "Something went wrong" });
@@ -52,22 +53,19 @@ namespace BlazorWebbApp.Services
             {
                 var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("UnsubscribeFunction"), subscribe);
 
+                var response = await result.Content.ReadFromJsonAsync<SubscribeResponseMessage>();
+
                 if (result.IsSuccessStatusCode)
                 {
-                    var response = await result.Content.ReadFromJsonAsync<SubscribeResponseMessage>();
-
-                    if (response.Status == 200)
-                    {
-                        return new OkObjectResult(new { Status = 200, Message = $"{response.Message}" });
-                    }
-                    if (response.Status == 409)
-                    {
-                        return new ConflictObjectResult(new { Status = 409, Message = $"{response.Message}" });
-                    }
-                    if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        return new NotFoundObjectResult(new { Status = 409, Message = $"{response.Message}" });
-                    }
+                    return new OkObjectResult(new { Status = 200, Message = $"{response.Message}" });
+                }
+                if (result.StatusCode == System.Net.HttpStatusCode.Conflict)
+                {
+                    return new ConflictObjectResult(new { Status = 409, Message = $"{response.Message}" });
+                }
+                if (result.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    return new NotFoundObjectResult(new { Status = 404, Message = $"{response.Message}" });
                 }
                 return new BadRequestObjectResult(new { Status = 400, Message = "Something went wrong" });
             }
