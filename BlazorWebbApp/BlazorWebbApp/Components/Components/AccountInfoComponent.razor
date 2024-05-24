@@ -40,7 +40,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-
+        await Task.Delay(20);
         var authState = await AuthenticationState.GetAuthenticationStateAsync();
         var userPrincipal = authState.User;
 

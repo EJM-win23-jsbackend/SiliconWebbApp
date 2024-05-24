@@ -1,0 +1,235 @@
+﻿@page "/account/notifications"
+@using BlazorWebbApp.Data
+@using BlazorWebbApp.Entities
+@using BlazorWebbApp.Models
+@using BlazorWebbApp.Services
+@using Microsoft.AspNetCore.Identity
+@using System.Diagnostics
+@using Microsoft.AspNetCore.Mvc
+@using System.Text.RegularExpressions
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+@inject IdentityRedirectManager RedirectManager
+@inject HttpClient Http
+@inject IHttpContextAccessor HttpContextAccessor
+@inject SubscriberServices _subscribeServices;
+
+@rendermode InteractiveServer
+
+<section>
+
+    <EditForm FormName="Subscribe" Model="@subscriberModel" OnValidSubmit="Subscribe"  novalidate>
+
+    <div class="notificationForm">
+        <div class="headlinesNotifications">
+            <h2 class="h2">Notifications</h2>
+            @if (!string.IsNullOrEmpty(Message))
+            {
+                <span class="@(isError ? "error" : "success")">@Message</span>
+            }
+            </div>
+        <div class="PreferredEmail">
+            <b>Preferred email for notification</b>
+            <div class="input input-theme input-notification">
+@*                 <DataAnnotationsValidator /> *@
+                <InputText @bind-Value="subscriberModel.Email" placeholder="Please enter an email" />
+            </div>
+            @if (!string.IsNullOrEmpty(validationMessage))
+            {
+                    <span class="error">@validationMessage</span>
+            }
+            </div>
+
+        <div>
+            <div class="btn-switchContainer">
+                <div class="btn-switch">
+                    <label hidden></label>
+                    <label class="switch" for="switch-mode-subscribe">
+                        <InputCheckbox type="checkbox" id="switch-mode-subscribe" @bind-Value="subscriberModel.IsChecked" />
+                        <div class="slider round"></div>
+                    </label>
+                    <label hidden></label>
+                </div>
+                <div class="btn-switchContainer-text">
+                    <b>Subscribe to Newsletter</b>
+                    <p>Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</p>
+                </div>
+            </div>
+
+            <div class="btn-switchContainer">
+                <div class="btn-switch">
+                    <label class="switch" for="switch-mode-dark">
+                        <input type="checkbox" class="switch-mode" />
+                        <div class="slider round"></div>
+                    </label>
+                </div>
+                <div class="btn-switchContainer-text">
+                    <b>Use Dark Mode Theme in Application</b>
+                    <p>Tortor massa porttitor enim tristique neque fermentum sed.</p>
+                </div>
+            </div>
+        </div>
+        <div class="btnContainer">
+            <button class="btn btn-gray" type="reset">Cancel</button>
+            <button class="btn btn-theme" type="submit">Save changes</button>
+        </div>
+    </div>
+    </EditForm>
+
+</section>
+
+@code {
+    [SupplyParameterFromQuery]
+    private string Message { get; set; } = string.Empty;
+
+    private string validationMessage { get; set; } = string.Empty;
+
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    public ApplicationUser? User { get; set; }
+
+    [SupplyParameterFromForm]
+    public SubscriberModel subscriberModel { get; set; } = new SubscriberModel();
+
+    public SubscribeEntity subscribeEntity { get; set; } = new SubscribeEntity();
+
+    private bool isError = true;
+
+    protected async override Task OnInitializedAsync()
+    {
+        HttpContext = HttpContextAccessor.HttpContext;
+
+        if (HttpContext != null)
+        {
+            User = UserManager.GetUserAsync(HttpContext.User).Result;
+
+            if(string.IsNullOrEmpty(subscriberModel.Email) && User != null && User.Email != null)
+            {
+                subscriberModel.Email = User.Email;
+            }
+        }
+
+        var subscriptionOn = await _subscribeServices.GetASubscriberAsync(User!.Id);
+        if(subscriptionOn is OkObjectResult okResult)
+        {
+            var responseObject = okResult.Value as dynamic;
+
+            if(responseObject != null)
+            {
+                subscriberModel.Email = responseObject.Email;
+                subscriberModel.IsChecked = true;
+            }
+
+        }
+    }
+
+    private async Task Subscribe()
+    {
+        if (subscriberModel.IsChecked)
+        {
+            string emailRegEx = @"^[a-zA-Z]{2,}@[a-zA-Z]{2,}\.[a-zA-Z]{2,}$";
+
+            if (!string.IsNullOrEmpty(subscriberModel.Email))
+            {
+                if (Regex.IsMatch(subscriberModel.Email, emailRegEx))
+                {
+                    validationMessage = string.Empty;
+
+                    try
+                    {
+                        var subscriberEntity = new SubscribeEntity
+                            {
+                                Id = "",
+                                Email = subscriberModel.Email,
+                                UserId = User.Id
+                            };
+
+                        var result = await _subscribeServices.SubscribeAsync(subscriberEntity);
+
+                        if (result is OkObjectResult okObjectResult)
+                        {
+                            isError = false;
+                            var responseObject = okObjectResult.Value as dynamic;
+                            Message = responseObject.Message;
+
+                        }
+                        else if (result is ConflictObjectResult objectResult)
+                        {
+                            isError = true;
+                            var responseObject = objectResult.Value as dynamic;
+                            Message = responseObject.Message;
+                        }
+                        else
+                        {
+                            isError = true;
+                            Message = "Something went wrong...";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Subscribe ::" + ex.Message);
+                    }
+                }
+                else
+                {
+                    isError = true;
+                    Message = string.Empty;
+                    validationMessage = "You must enter a valid email";
+                }
+            }
+            else
+            {
+                isError = true;
+                Message = string.Empty;
+                validationMessage = "An valid email is required";
+            }
+        }
+        else
+        {
+            try
+            {
+                var subscribeEntity = new SubscribeEntity
+                    {
+                        Id = "",
+                        Email = "",
+                        UserId = User!.Id
+
+                    };
+                validationMessage = string.Empty;
+                var result = await _subscribeServices.UnsubscribeAsync(subscribeEntity);
+
+                if (result is OkObjectResult okObjectResult)
+                {
+                    isError = false;
+                    var responseObject = okObjectResult.Value as dynamic;
+                    Message = responseObject.Message;
+
+                }
+                else if (result is UnauthorizedObjectResult objectResult)
+                {
+                    isError = true;
+                    var responseObject = objectResult.Value as dynamic;
+                    Message = responseObject.Message;
+                }
+                else if(result is NotFoundObjectResult objectNotfoundResult)
+                {
+                    isError = true;
+                    var responseObject = objectNotfoundResult.Value as dynamic;
+                    Message = "You're currently isn't up for subscription...";
+                }
+                else
+                {
+                    isError = true;
+                    Message = "Something went wrong...";
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Subscribe ::" + ex.Message);
+            }
+        }
+    }
+}

@@ -1,9 +1,10 @@
 ﻿.sidebar {
   text-align: start;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 .sidebar .btn-theme {
   display: flex;
+  justify-content: left;
   font-size: 1rem;
 }
 .sidebar .btn-theme i {
