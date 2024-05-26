@@ -6,13 +6,20 @@
 
 @inject HttpClient Http
 
-@* @attribute [Authorize] *@
+@attribute [Authorize]
 
 
 <PageTitle>Courses</PageTitle>
 
 <section class="courses">
     <div class="container">
+        <div class="navigationContainer">
+            <nav class="navigation">
+                <a href="/"><i class="fa-solid fa-house"></i> Home </a>
+                <p> >> </p>
+                <a class="link-active" href="/courses"> Courses </a>
+            </nav>
+        </div>
         <div class="header">
             <h1>Courses</h1>
         </div>
@@ -61,12 +68,6 @@
         </div>
     </div>
 </section>
-
-
-
-
-
-
 
 
 @code {
