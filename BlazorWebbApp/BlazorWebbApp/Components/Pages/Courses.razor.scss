@@ -1,9 +1,28 @@
 .courses {
     width: 100%;
     max-width: 100%;
+    margin-bottom: 5rem;
+
 
     .container {
         position: relative;
+
+        .navigationContainer {
+            position: absolute;
+            top: -5rem;
+
+            a {
+                color: black;
+                text-decoration: none;
+                padding: 0.5rem;
+            }
+
+            .link-active {
+                color: rebeccapurple;
+                font-weight: bold;
+            }
+        }
+
 
         .header {
             display: flex;
@@ -65,6 +84,7 @@
 
                 .course {
                     text-decoration: none;
+
                     .best-seller {
                         background-color: green;
                         position: absolute;
@@ -95,17 +115,24 @@
                         }
 
                         p {
+                            padding: 0.5rem 0rem 0.5rem 0rem;
                             font-size: small;
                             color: black;
                         }
 
                         .course-prices {
                             display: flex;
-                            /*gap: 1rem;*/
                             padding-bottom: 1rem;
 
                             .originalprice {
                                 color: mediumblue;
+                                text-decoration: none;
+
+                                &.discount-enabled {
+                                    color: gray;
+                                    text-decoration: line-through;
+                                    margin-left: 1rem;
+                                }
                             }
 
                             .discountprice {
@@ -133,4 +160,5 @@
                 }
             }
         }
-    }}
+    }
+}

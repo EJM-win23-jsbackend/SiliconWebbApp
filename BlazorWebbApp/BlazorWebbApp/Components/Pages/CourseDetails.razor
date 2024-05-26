@@ -1,0 +1,244 @@
+﻿@page "/courses/details/{id}"
+
+@using Microsoft.AspNetCore.Authorization
+@using BlazorWebbApp.Models
+@using System.Text.Json
+@using Newtonsoft.Json
+
+@inject HttpClient Http
+
+@attribute [Authorize]
+
+
+<section class="coursedetails">
+    @if (course?.ImageHeaderUri != null)
+    {
+        <div class="backgroundImage" style="background-image: url('/images/@course.ImageHeaderUri');"></div>
+    }
+    <div class="container">
+        @if (course == null)
+        {
+            <div><i class="fa-sharp fa-solid fa-spinner-third fa-spin"></i></div>
+        }
+        else
+        {
+            <div class="ImageHeadline">
+                <div class="navigationContainer">
+                    <nav class="navigation">
+                        <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+                        <p> >> </p>
+                        <a href="/courses">Courses</a>
+                        <p> >> </p>
+                        <a href="/courses/details/@Id">@course.Title</a>
+                    </nav>
+                </div>
+                <div class="ImageHeadlineContainer">
+                    <div class="marks">
+                        @if (course.IsBestSeller == true)
+                        {
+                            <div class="best-seller"><p>Best Seller</p></div>
+                        }
+                        @if (course.IsDigital == true)
+                        {
+                            <div class="digital-container"><p>Digital</p></div>
+                        }
+                    </div>
+                    <div class="h1-courses">@course.Title</div>
+                    <p class="underline">@course.Ingress</p>
+                </div>
+                @{
+                    var numberOfStars = course.StarRating ?? 0; 
+                    var numberOfEmptyStars = 5 - numberOfStars;
+                }
+                <div class="likesAndTeacher">
+                    <div class="timeAndLikesParent">
+                        <div class="timeAndLikesChild">
+
+                            @for (int i = 0; i < numberOfStars; i++)
+                            {
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M13.6313 5.11925C13.5453 4.86725 13.3179 4.68925 13.0526 4.66859L9.25195 4.36659L7.60728 0.725919C7.49995 0.486585 7.26195 0.333252 6.99995 0.333252C6.73795 0.333252 6.49995 0.486585 6.39261 0.725252L4.74795 4.36659L0.947279 4.66859C0.686612 4.68925 0.461945 4.86059 0.373279 5.10659C0.284612 5.35259 0.347279 5.62792 0.534612 5.81059L3.34328 8.54859L2.34995 12.8499C2.28861 13.1159 2.39595 13.3926 2.62061 13.5479C2.73528 13.6266 2.86728 13.6666 2.99995 13.6666C3.12861 13.6666 3.25795 13.6293 3.36995 13.5546L6.99995 11.1346L10.6299 13.5546C10.8619 13.7093 11.1666 13.7033 11.3933 13.5386C11.6186 13.3739 11.7179 13.0853 11.6413 12.8173L10.4219 8.55059L13.4459 5.82925C13.6439 5.65059 13.7166 5.37192 13.6313 5.11925Z" fill="#FFBA08" />
+                                </svg>
+                            }
+                            @for (int i = 0; i < numberOfEmptyStars; i++)
+                            {
+                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.5" d="M3.34399 8.54859L2.35066 12.8499C2.28932 13.1159 2.39599 13.3926 2.62132 13.5479C2.73532 13.6266 2.86732 13.6666 2.99999 13.6666C3.12866 13.6666 3.25799 13.6293 3.36999 13.5546L6.99999 11.1346L10.63 13.5546C10.862 13.7093 11.1667 13.7033 11.3933 13.5386C11.6187 13.3739 11.718 13.0853 11.6413 12.8173L10.422 8.55059L13.446 5.82925C13.644 5.65059 13.7167 5.37192 13.6313 5.11992C13.5453 4.86792 13.318 4.69059 13.0527 4.66925L9.25199 4.36659L7.60732 0.725919C7.49999 0.486585 7.26199 0.333252 6.99999 0.333252C6.73799 0.333252 6.49999 0.486585 6.39266 0.725919L4.74799 4.36659L0.947324 4.66859C0.685991 4.68925 0.461324 4.86059 0.373324 5.10659C0.283991 5.35259 0.347991 5.62792 0.534658 5.81059L3.34399 8.54859ZM5.24599 5.66459C5.48799 5.64525 5.70132 5.49592 5.80066 5.27392L6.99999 2.61992L8.19932 5.27392C8.29866 5.49592 8.51199 5.64525 8.75399 5.66459L11.402 5.87459L9.22132 7.83725C9.03199 8.00792 8.95666 8.27059 9.02599 8.51592L9.86132 11.4393L7.37066 9.77859C7.14666 9.62859 6.85532 9.62859 6.63132 9.77859L4.02866 11.5139L4.72866 8.48325C4.78066 8.25659 4.71132 8.01859 4.54466 7.85659L2.51932 5.88192L5.24599 5.66459Z" fill="white" />
+                                </svg>
+                            }
+                            <p>(@course.Reviews) reviews</p> 
+                        </div>
+                        <div class="verticalborder"></div>
+                        <div class="timeAndLikesChild">
+                            <p class="p-timeAndLikes"><i class="fa-solid fa-thumbs-up"></i>@course.Likes</p>
+                        </div>
+                        <div class="verticalborder"></div>
+                        <div class="timeAndLikesChild">
+                            <p class="p-timeAndLikes"><i class="fa-solid fa-clock"></i>@course.Hours Hours </p>
+                        </div>
+                    </div>
+                    <div class="courseLeader-container">
+                        @{
+                            var author = course?.Authors?.FirstOrDefault(a => a.Id == 1);
+                        }
+                        @if (author?.AuthorImage == null) { <img class="imageTeacher" src="/images/avatar.jpg" /> }
+                        else { <img class="imageTeacher" src="/images/@author.AuthorImage"/> }
+                        <div class="nameContainer">
+                            <b>Created by</b>
+                            <p class="p">@author?.Name</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="CourseDetails">
+                <div class="line"></div>
+                <div class="courseDescription">
+                    <h1 class="HeadLine">Course Description</h1>
+                    <p>@course?.Description</p>
+                </div>
+                <div class="whatYouLearn">
+                    <h3 class="HeadLine">What you'll learn</h3>
+                    <ul>
+                        @if (course?.Learning != null)
+                        {
+                            @foreach (var learnItem in course.Learning) 
+                            {
+                                <li>
+                                    <div class="containerContent">
+                                        <p> @learnItem</p>
+                                    </div>
+                                </li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="joinCourse" novalidate>
+                    <h5>This course includes:</h5>
+                    <ul>
+                        <div class="containerContent"> 
+                            <ul>
+                                @foreach (var include in course?.Includes!)
+                                {
+                                    <p class="content"> @include</p> @* font awesome?? *@
+                                }
+                            </ul>
+                        </div>
+                    </ul>
+                    <div class="price">
+                        @if (course.Discount == null)
+                        {
+                            <div class="Price">@course.Price</div>
+                        }
+                        else
+                        {
+                            <div class="Price">@course.Discount</div>
+                            <div class="orgPrice">@course.Price</div>
+                        }
+                    </div>
+                    <button class="btn-theme-s" type="submit">Join course</button>
+                </div>
+            </div>
+            <div class="ProgramDetails">
+                <div class="HeadlineProgramDetails">
+                    <h1>Program Details</h1>
+                </div>
+                <div class="contentContainer">
+                    @if (course.ProgramDetails != null)
+                    {
+                        var numberOfItems = 0;
+                        var totalItems = course.ProgramDetails.Count();
+                        foreach (var item in course.ProgramDetails)
+                        {
+                            numberOfItems++;
+                            <div class="boxContainer">
+                                <div class="numberContainer">
+                                    <div class="outerCircle">
+                                        <div class="innerCircle">
+                                            <h3>
+                                                @numberOfItems
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    @if (numberOfItems != totalItems)
+                                    {
+                                        <div class="line"></div>
+                                    }
+                                </div>
+                                <div class="textContainerProgramDetails">
+                                    <h5>@item.Title</h5>
+                                    <p>@item.Description</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="line"></div>
+            </div>
+        }
+    </div>
+</section>
+
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    private CourseDetailsModel? course;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GraphQLQuery { Query = $"{{ getCoursesById(id: \"{Id}\") {{ title ingress isDigital reviews isBestSeller imageHeaderUri starRating likesInProcent likes hours content {{description learning includes programDetails {{id description title }} }} authors {{ id name authorImage }} prices {{ price discount }} }} }}" };
+        var response = await Http.PostAsJsonAsync("https://courseprovider-ejm.azurewebsites.net/api/graphql?code=WFw9JlFcINQqtM1YeOLUAd6wpm5rJ8i5ajIxp__0mVnUAzFuengWgw%3D%3D", query);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<DynamicGraphQlResponse>();
+            if (result?.Data.TryGetProperty("getCoursesById", out JsonElement courseData) == true)
+            {
+                // Debugging code to inspect the value of the learning property
+                var learningElement = courseData.GetProperty("content").GetProperty("learning");
+                Console.WriteLine($"Learning property value: {learningElement.ToString()}");
+
+                course = new CourseDetailsModel
+                {
+                    Title = courseData.GetProperty("title").GetString(),
+                    Ingress = courseData.GetProperty("ingress").GetString(),
+                    IsBestSeller = courseData.GetProperty("isBestSeller").GetBoolean(),
+                    IsDigital = courseData.GetProperty("isDigital").GetBoolean(),
+                    ImageHeaderUri = courseData.GetProperty("imageHeaderUri").GetString(),
+                    Reviews = courseData.GetProperty("reviews").GetString(),
+                    Hours = courseData.GetProperty("hours").GetString(),
+                    Likes = courseData.GetProperty("likes").GetString(),
+                    LikesInProcent = courseData.GetProperty("likesInProcent").GetString(),
+                    Authors = courseData.GetProperty("authors").EnumerateArray().Select(author => new AuthorModel
+                    {
+                        Id = author.GetProperty("id").GetInt32(),
+                        Name = author.GetProperty("name").GetString(),
+                        AuthorImage = author.GetProperty("authorImage").GetString()
+                    }).ToList(),
+                    Price = $"{courseData.GetProperty("prices").GetProperty("price").GetString()}",
+                    Discount = $"{courseData.GetProperty("prices").GetProperty("discount").GetString()}",
+                    StarRating = int.TryParse(courseData.GetProperty("starRating").GetString(), out int starRatingValue) ? starRatingValue : 0,
+                    Includes = courseData.GetProperty("content").GetProperty("includes").EnumerateArray().Select(x => x.GetString() ?? string.Empty).ToArray(),
+                    Learning = courseData.GetProperty("content").GetProperty("learning").EnumerateArray().Select(x => x.GetString() ?? string.Empty).ToArray(),
+                    Description = $"{courseData.GetProperty("content").GetProperty("description").GetString()}",
+                    ProgramDetails = courseData.GetProperty("content").GetProperty("programDetails").EnumerateArray()
+                        .Select(item => new ProgramDetail
+                        {
+                            Id = item.GetProperty("id").GetInt32(),
+                            Description = item.GetProperty("description").GetString(),
+                            Title = item.GetProperty("title").GetString()
+                        })
+                        .ToList()
+                };
+
+                // Debug output to verify authors data
+                Console.WriteLine("Authors data:");
+                foreach (var author in course.Authors)
+                {
+                    Console.WriteLine($"Id: {author.Id}, Name: {author.Name}, AuthorImage: {author.AuthorImage}");
+                }
+            }
+        }
+    }
+}

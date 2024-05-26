@@ -1,9 +1,23 @@
 ﻿.courses {
   width: 100%;
   max-width: 100%;
+  margin-bottom: 5rem;
 }
 .courses .container {
   position: relative;
+}
+.courses .container .navigationContainer {
+  position: absolute;
+  top: -5rem;
+}
+.courses .container .navigationContainer a {
+  color: black;
+  text-decoration: none;
+  padding: 0.5rem;
+}
+.courses .container .navigationContainer .link-active {
+  color: rebeccapurple;
+  font-weight: bold;
 }
 .courses .container .header {
   display: flex;
@@ -91,16 +105,22 @@
   font-size: x-large !important;
 }
 .courses .container .items .course-wrapper .course .content p {
+  padding: 0.5rem 0rem 0.5rem 0rem;
   font-size: small;
   color: black;
 }
 .courses .container .items .course-wrapper .course .content .course-prices {
   display: flex;
-  /*gap: 1rem;*/
   padding-bottom: 1rem;
 }
 .courses .container .items .course-wrapper .course .content .course-prices .originalprice {
   color: mediumblue;
+  text-decoration: none;
+}
+.courses .container .items .course-wrapper .course .content .course-prices .originalprice.discount-enabled {
+  color: gray;
+  text-decoration: line-through;
+  margin-left: 1rem;
 }
 .courses .container .items .course-wrapper .course .content .course-prices .discountprice {
   color: red;
