@@ -2,11 +2,27 @@
     display: flex;
     justify-content: center;
 
+    .btnAndimageContainer {
+        position: relative;
+
+        .input-file
+        {
+            display: none;
+        }
+        .imageContainer {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            overflow: hidden;
+        }
+    }
+
     .content {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
+
     img {
         max-width: 100%;
         max-height: 100%;

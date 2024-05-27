@@ -19,6 +19,8 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<SubscriberServices>();
+builder.Services.AddScoped<ProfileImageServices>();
+
 
 
 builder.Services.AddAuthentication(options =>
