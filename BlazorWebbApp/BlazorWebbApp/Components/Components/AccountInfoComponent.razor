@@ -5,6 +5,7 @@
 @using BlazorWebbApp.Models
 @using BlazorWebbApp.Services
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -58,6 +59,7 @@ else
 }
 
 @code {
+    [Inject] NavigationManager NavigationManager { get; set; }
 
     private ApplicationUser? user;
 
@@ -90,6 +92,11 @@ else
         await selectedFile.OpenReadStream().CopyToAsync(stream);
         stream.Position = 0; // Återställ strömmen till början
         var result = await _fileUplaod.UploadProfileImageAsync(selectedFile, userId);
+
+        if (result is OkObjectResult okResult && okResult.StatusCode == StatusCodes.Status200OK)
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+        }
 
         stream.Dispose(); // Stäng streamen när den inte längre behövs
     }

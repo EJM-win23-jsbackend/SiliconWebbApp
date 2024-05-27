@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace BlazorWebbApp.Services
 {
     public class ProfileImageServices
     {
         private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public ProfileImageServices(HttpClient httpClient)
+        public ProfileImageServices(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> UploadProfileImageAsync(IBrowserFile model, string userId)
@@ -32,7 +35,10 @@ namespace BlazorWebbApp.Services
 
                         content.Add(streamContent, "file", model.Name);
 
-                        var response = await _httpClient.PostAsync($"http://localhost:7181/api/uploadprofilepicture/{userId}", content);
+                        var baseConnectionString = _configuration.GetConnectionString("UploadProfileImage");
+                        var connectionString = baseConnectionString.Replace("{userId}", userId);
+
+                        var response = await _httpClient.PostAsync(connectionString, content);
 
                         if (response.IsSuccessStatusCode)
                         {
@@ -55,7 +61,11 @@ namespace BlazorWebbApp.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"http://localhost:7181/api/getfile/{userId}");
+                var baseConnectionString = _configuration.GetConnectionString("DownloadProfileImage");
+                var connectionString = baseConnectionString.Replace("{userId}", userId);
+
+                var response = await _httpClient.GetAsync(connectionString);
+
                 if (response.IsSuccessStatusCode)
                 {
                     var imageBytes = await response.Content.ReadAsByteArrayAsync();
