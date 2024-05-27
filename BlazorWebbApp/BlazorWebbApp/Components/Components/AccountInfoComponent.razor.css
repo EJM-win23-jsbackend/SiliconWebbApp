@@ -2,6 +2,18 @@
   display: flex;
   justify-content: center;
 }
+.profile .btnAndimageContainer {
+  position: relative;
+}
+.profile .btnAndimageContainer .input-file {
+  display: none;
+}
+.profile .btnAndimageContainer .imageContainer {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+}
 .profile .content {
   display: flex;
   flex-direction: column;
