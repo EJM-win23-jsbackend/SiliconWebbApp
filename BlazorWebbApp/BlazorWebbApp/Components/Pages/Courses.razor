@@ -1,0 +1,100 @@
+﻿@page "/courses"
+
+@using Microsoft.AspNetCore.Authorization
+@using BlazorWebbApp.Models
+@using System.Text.Json
+
+@inject HttpClient Http
+
+@attribute [Authorize]
+
+
+<PageTitle>Courses</PageTitle>
+
+<section class="courses">
+    <div class="container">
+        <div class="navigationContainer">
+            <nav class="navigation">
+                <a href="/"><i class="fa-solid fa-house"></i> Home </a>
+                <p> >> </p>
+                <a class="link-active" href="/courses"> Courses </a>
+            </nav>
+        </div>
+        <div class="header">
+            <h1>Courses</h1>
+        </div>
+        <div class="items">
+            @if (courses == null)
+            {
+                <div><i class="fa-sharp fa-solid fa-spinner-third fa-spin"></i></div>
+            }
+            else
+            {
+                @foreach (var item in courses)
+                {
+                    var link = $"courses/details/{item.Id}";
+                    <div class="course-wrapper">
+                        <button class="bookmark" onclick=""><i class="fa-regular fa-bookmark"></i></button> @* not functional *@
+                        <a href="@link" class="course">
+                            @if (item.IsBestSeller)
+                            {
+                                <div class="best-seller">
+                                    <p>Best Seller</p>
+                                </div>
+                            }
+                            <img class="course-image" src="/images/@item.ImageUri" alt="" />   
+                            <div class="content">
+                                <h2>@item.Title</h2>
+                                <p>By @item.Author</p>
+                                <div class="course-prices">
+                                    @if (item.Discount != null)
+                                    {
+                                        <div class="discountprice">@item.Discount</div>
+                                    }
+                                    <div class="originalprice @(!string.IsNullOrEmpty(item.Discount) ? "discount-enabled" : "")">@item.Price</div>
+                                </div>
+                                <div class="course-footer">
+                                    <div><i class="fa-regular fa-clock"></i> @item.Hours hours</div>
+                                    <div class="course-likes">
+                                        <div><i class="fa-regular fa-thumbs-up"> </i>@($"{item.LikesInProcent}")</div>
+                                        <div>(@($"{item.Likes}"))</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+
+@code {
+    private List<CoursesModel>? courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GraphQLQuery { Query = "{ getCourses { id title isBestSeller imageUri likesInProcent likes hours authors {name} prices {currency price discount}}}" };
+        var response = await Http.PostAsJsonAsync("https://courseprovider-ejm.azurewebsites.net/api/graphql?code=WFw9JlFcINQqtM1YeOLUAd6wpm5rJ8i5ajIxp__0mVnUAzFuengWgw%3D%3D", query);
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<DynamicGraphQlResponse>();
+            courses = result?.Data.GetProperty("getCourses").EnumerateArray()
+            .Select(course => new CoursesModel
+                {
+                    Id = course.GetProperty("id").GetString(),
+                    IsBestSeller = course.GetProperty("isBestSeller").GetBoolean(),
+                    ImageUri = course.GetProperty("imageUri").GetString(), 
+                    Title = course.GetProperty("title").GetString(),
+                    Hours = course.GetProperty("hours").GetString(),
+                    Likes = course.GetProperty("likes").GetString(),
+                    LikesInProcent = course.GetProperty("likesInProcent").GetString(),
+                    Author = course.GetProperty("authors")[0].GetProperty("name").GetString(), // gets only one author, needs more functionality to get multible authors
+                    Price = $"{course.GetProperty("prices").GetProperty("price").GetString()}",
+                    Discount = $"{course.GetProperty("prices").GetProperty("discount").GetString()}",
+                })
+            .ToList();
+        }
+    }
+}

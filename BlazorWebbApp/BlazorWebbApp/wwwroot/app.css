@@ -1,4 +1,41 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
+:root {
+  --color-transparent: transparent;
+  --color-white: #FFFFFF;
+  --color-gray-100: #F3F6FF;
+  --color-gray-200: #EFF2FC;
+  --color-gray-300: #E2E5F1;
+  --color-gray-400: #D4D7E5;
+  --color-gray-500: #B4B7C9;
+  --color-gray-600: #9397AD;
+  --color-gray-700: #565973;
+  --color-gray-800: #33354D;
+  --color-gray-900: #0B0F19;
+  --color-black: #000000;
+  --color-Skills: #F3F6FF;
+  --color-danger: #EF4444;
+  --color-success: #22C55E;
+  --color-warning: #FFBA08;
+  --color-info: #4C82F7;
+  --color-theme: #6366F1;
+  --color-theme-secondary: #8B5CF6;
+}
+
+/*:root.dark {
+    --color-transparent: transparent;
+    --color-white: #000000;
+    --color-gray-100: #0B0F19;
+    --color-gray-200: #33354D;
+    --color-gray-300: #565973;
+    --color-gray-400: #9397AD;
+    --color-gray-500: #B4B7C9;
+    --color-gray-600: #D4D7E5;
+    --color-gray-700: #E2E5F1;
+    --color-gray-800: #EFF2FC;
+    --color-gray-900: #F3F6FF;
+    --color-black: #FFFFFF;
+    --color-Skills: #B4B7C9;
+}*/
+
 p {
   margin: 0;
 }
@@ -261,43 +298,6 @@ h6, .h6 {
   display: none;
 }
 
-:root {
-  --color-transparent: transparent;
-  --color-white: #FFFFFF;
-  --color-gray-100: #F3F6FF;
-  --color-gray-200: #EFF2FC;
-  --color-gray-300: #E2E5F1;
-  --color-gray-400: #D4D7E5;
-  --color-gray-500: #B4B7C9;
-  --color-gray-600: #9397AD;
-  --color-gray-700: #565973;
-  --color-gray-800: #33354D;
-  --color-gray-900: #0B0F19;
-  --color-black: #000000;
-  --color-Skills: #F3F6FF;
-  --color-danger: #EF4444;
-  --color-success: #22C55E;
-  --color-warning: #FFBA08;
-  --color-info: #4C82F7;
-  --color-theme: #6366F1;
-  --color-theme-secondary: #8B5CF6;
-}
-
-/*:root.dark {
-    --color-transparent: transparent;
-    --color-white: #000000;
-    --color-gray-100: #0B0F19;
-    --color-gray-200: #33354D;
-    --color-gray-300: #565973;
-    --color-gray-400: #9397AD;
-    --color-gray-500: #B4B7C9;
-    --color-gray-600: #D4D7E5;
-    --color-gray-700: #E2E5F1;
-    --color-gray-800: #EFF2FC;
-    --color-gray-900: #F3F6FF;
-    --color-black: #FFFFFF;
-    --color-Skills: #B4B7C9;
-}*/
 .btn {
   border-radius: 6px;
   text-align: center;
@@ -435,9 +435,8 @@ h6, .h6 {
   text-decoration: none;
   background: var(--color-gray-700);
   color: var(--color-white);
-}
-
-.circle {
+  
+ .circle {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -448,6 +447,7 @@ h6, .h6 {
   z-index: 1;
   overflow: hidden;
 }
+  
 .circle .input-file {
   display: none;
 }
@@ -603,26 +603,12 @@ h6, .h6 {
 }
 .user-links:active {
   background-color: var(--color-theme);
-  box-shadow: 0px 8px 18px -8px rgba(99, 102, 241, 0.9);
+  /*   @include theme-shadow;*/
 }
 .user-links:active path {
   color: var(--color-gray-100);
 }
 
-/*.active {
-    background-color: $theme;
-    color: var(--color-gray-100);
-    @include theme-shadow;
-    fill: var(--color-gray-100) !important;
-
-    path {
-        fill: var(--color-gray-100);
-    }
-
-    i {
-        color: var(--color-gray-100);
-    }
-}*/
 .navigation {
   margin-top: 1rem;
   display: flex;
