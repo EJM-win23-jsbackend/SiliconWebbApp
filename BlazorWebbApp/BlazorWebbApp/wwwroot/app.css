@@ -1,3 +1,4 @@
+﻿@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
 :root {
   --color-transparent: transparent;
   --color-white: #FFFFFF;
@@ -35,7 +36,6 @@
     --color-black: #FFFFFF;
     --color-Skills: #B4B7C9;
 }*/
-
 p {
   margin: 0;
 }
@@ -435,8 +435,9 @@ h6, .h6 {
   text-decoration: none;
   background: var(--color-gray-700);
   color: var(--color-white);
-  
- .circle {
+}
+
+.circle {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -447,7 +448,6 @@ h6, .h6 {
   z-index: 1;
   overflow: hidden;
 }
-  
 .circle .input-file {
   display: none;
 }
