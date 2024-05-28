@@ -9,9 +9,13 @@
   display: none;
 }
 .profile .btnAndimageContainer .imageContainer {
+  border: 1px solid var(--color-gray-200);
   border-radius: 50%;
   width: 120px;
   height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   overflow: hidden;
 }
 .profile .content {

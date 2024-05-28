@@ -1,8 +1,7 @@
-﻿using Azure;
-using BlazorWebbApp.Entities;
+﻿using BlazorWebbApp.Entities;
 using BlazorWebbApp.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.Json;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
@@ -12,18 +11,21 @@ namespace BlazorWebbApp.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
+        private readonly IOptions<ConnectionStrings> _options;
 
-        public SubscriberServices(HttpClient httpClient, IConfiguration configuration)
+        public SubscriberServices(HttpClient httpClient, IConfiguration configuration, IOptions<ConnectionStrings> options)
         {
             _httpClient = httpClient;
             _configuration = configuration;
+            _options = options;
         }
 
         public async Task<IActionResult> SubscribeAsync(SubscribeEntity subscribe)
         {
             try 
             {
-                var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("SubscribeFunction"), subscribe);
+                var connectionString = _options.Value.SubscribeFunction;
+                var result = await _httpClient.PostAsJsonAsync(connectionString, subscribe);
 
                 var content = await result.Content.ReadAsStringAsync();
 
@@ -51,7 +53,8 @@ namespace BlazorWebbApp.Services
         {
             try
             {
-                var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("UnsubscribeFunction"), subscribe);
+                var connectionString = _options.Value.UnsubscribeFunction;
+                var result = await _httpClient.PostAsJsonAsync(connectionString, subscribe);
 
                 var response = await result.Content.ReadFromJsonAsync<SubscribeResponseMessage>();
 
@@ -80,7 +83,8 @@ namespace BlazorWebbApp.Services
         {
             try
             {
-                var result = await _httpClient.PostAsJsonAsync(_configuration.GetConnectionString("GetASubscriberFunction"), userId);
+                var connectionString = _options.Value.GetASubscriberFunction;
+                var result = await _httpClient.PostAsJsonAsync(connectionString, userId);
 
                 var content = await result.Content.ReadAsStringAsync();
 

@@ -1,4 +1,11 @@
-﻿<div class="header">
+﻿@using BlazorWebbApp.Data
+@using BlazorWebbApp.Services
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ProfileImageServices _fileUplaod
+
+<div class="header">
     <div class="container">
         <a class="logo" href="/"><img src="/images/silicon-logotype-light.svg" alt=""></a>
         <div class="menu">
@@ -13,21 +20,20 @@
                 </AuthorizeView>
             </nav>
         </div>
-        <div class="btn-switch">
-            <label>Light</label>
-            <label class="switch" for="switch-mode">
-                <input type="checkbox" class="switch-mode" />
-                <div class="slider round"></div>
-            </label>
-            <label>Dark</label>
-        </div>
         <div class="account-buttons">
             <AuthorizeView>
                 <Authorized>
                     <div class="profile">
-                        <a href="/account/manage">
-                            <img class="profile-image" src="/images/avatar.jpg" /> 
-                        </a>
+                        <NavLink href="/account/manage">
+                            @if(ProfileImage != null)
+                            {
+                                <img class="profile-image" src="@ProfileImage" />
+                            }
+                            else
+                            {
+                                <img class="profile-image" src="/images/avatar.jpg" />
+                            }
+                        </NavLink>
                     </div>
                 </Authorized>
                 <NotAuthorized>
@@ -41,4 +47,27 @@
 
 @code {
 
+    public ApplicationUser? user { get; set; }
+
+    private string? ProfileImage { get; set; }
+
+    [CascadingParameter]
+    private HttpContext? HttpContext { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        user = UserManager.GetUserAsync(HttpContext.User).Result;
+
+        if (user != null)
+        {
+            ProfileImage = await GetProfileImageAsync();
+        }
+    }
+
+    private async Task<string> GetProfileImageAsync()
+    {
+        string userId = user.Id;
+        var profileImage = await _fileUplaod.DownloadProfileImageAsync(userId);
+        return profileImage;
+    }
 }
