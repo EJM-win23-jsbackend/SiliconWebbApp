@@ -1,18 +1,21 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.Net.NetworkInformation;
+using Microsoft.Extensions.Options;
+using BlazorWebbApp.Models;
 
 namespace BlazorWebbApp.Services
 {
     public class ProfileImageServices
     {
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _configuration;
+        private readonly IOptions<ConnectionStrings> _options;
 
-        public ProfileImageServices(HttpClient httpClient, IConfiguration configuration)
+        public ProfileImageServices(HttpClient httpClient, IOptions<ConnectionStrings> options)
         {
             _httpClient = httpClient;
-            _configuration = configuration;
+            _options = options;
         }
 
         public async Task<IActionResult> UploadProfileImageAsync(IBrowserFile model, string userId)
@@ -35,7 +38,7 @@ namespace BlazorWebbApp.Services
 
                         content.Add(streamContent, "file", model.Name);
 
-                        var baseConnectionString = _configuration.GetConnectionString("UploadProfileImage");
+                        var baseConnectionString = _options.Value.UploadProfileImage;
                         var connectionString = baseConnectionString.Replace("{userId}", userId);
 
                         var response = await _httpClient.PostAsync(connectionString, content);
@@ -61,7 +64,7 @@ namespace BlazorWebbApp.Services
         {
             try
             {
-                var baseConnectionString = _configuration.GetConnectionString("DownloadProfileImage");
+                var baseConnectionString = _options.Value.DownloadProfileImage;
                 var connectionString = baseConnectionString.Replace("{userId}", userId);
 
                 var response = await _httpClient.GetAsync(connectionString);

@@ -1,12 +1,16 @@
 using BlazorWebbApp.Components;
 using BlazorWebbApp.Components.Account;
 using BlazorWebbApp.Data;
+using BlazorWebbApp.Models;
 using BlazorWebbApp.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("Values"));
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
