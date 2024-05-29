@@ -1,9 +1,11 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using BlazorWebbApp.Data
+@using System.Security.Claims
 
 @inject NavigationManager Navigation
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject HttpClient Http
 
 @rendermode InteractiveServer
 
@@ -16,9 +18,14 @@
                 <a class="btn btn-transparent" href="account/notifications"><i class="fa-regular fa-bell"></i><span class="span">Notifications</span></a>
                 <a class="btn btn-transparent" href="account/messages"><i class="fa-regular fa-message"></i><span class="span">Messages</span></a>
                 <a class="btn btn-transparent" href="courses/savedcourses"><i class="fa-regular fa-bookmark"></i><span class="span">Saved Courses</span></a>
-                <a class="btn btn-transparent" @onclick="SignOutbtn">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i><span class="span">Sign Out</span>
-                </a>
+                
+                <form action="Account/Logout" method="post">
+                    <AntiforgeryToken />
+                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                    <button class="btn btn-transparent" type="submit">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i><span class="span">Sign Out</span>
+                    </button>
+                </form>
             </div>
         </div>
     </Authorized>
@@ -26,17 +33,33 @@
 
 @code {
 
-    public async Task SignOutbtn()
-    {
-        try
-        {
-            Navigation.NavigateTo("/Logout", true);
-        }
-        catch (Exception ex)
-        {
 
-            Console.WriteLine("Error when trying to sign out...." + ex.Message);
-        }
+    private string? currentUrl;
 
-    }
+    // private async Task SignOutbtn()
+    // {
+    //     try
+    //     {
+
+    //         var response = await Http.PostAsync("http://localhost:7287/api/logout", null);
+
+    //         if (response.IsSuccessStatusCode)
+    //         {
+    //             Console.WriteLine("logout request success. status code: " + response.StatusCode);
+    //             Navigation.NavigateTo("/", forceLoad: true);
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("logout request failed. status code: " + response.StatusCode);
+    //         }
+
+
+    //     }
+    //     catch (Exception ex)
+    //     {
+
+    //         Console.WriteLine("Error when trying to sign out...." + ex.Message);
+    //     }
+
+    // }
 }
