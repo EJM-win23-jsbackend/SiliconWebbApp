@@ -28,6 +28,10 @@ else
         <Authorized>
             <div class="profile">
                 <div class="content">
+                    @if(!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="error">@errorMessage</div>
+                    }
                     <div class="btnAndimageContainer">
                         <div class="imageContainer">
                             @if (profileImage != null)
@@ -63,6 +67,8 @@ else
 
     private ApplicationUser? user;
 
+    private string? errorMessage { get; set; }
+
     private string? profileImage { get; set; }
 
     [SupplyParameterFromForm]
@@ -72,7 +78,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(1000);
+
         var authState = await AuthenticationState.GetAuthenticationStateAsync();
         var userPrincipal = authState.User;
 
@@ -86,19 +92,35 @@ else
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        string userId = user.Id;
-        selectedFile = e.File;
-        var stream = new MemoryStream();
-        await selectedFile.OpenReadStream().CopyToAsync(stream);
-        stream.Position = 0; // Återställ strömmen till början
-        var result = await _fileUplaod.UploadProfileImageAsync(selectedFile, userId);
-
-        if (result is OkObjectResult okResult && okResult.StatusCode == StatusCodes.Status200OK)
+        try
         {
-            NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
-        }
+            string userId = user.Id;
+            selectedFile = e.File;
 
-        stream.Dispose(); // Stäng streamen när den inte längre behövs
+            string filePath = Path.Combine(Path.GetTempPath(), selectedFile.Name);
+            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+            {
+                await selectedFile.OpenReadStream().CopyToAsync(stream);
+            }
+
+            using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            {
+
+                var result = await _fileUplaod.UploadProfileImageAsync(selectedFile, userId);
+
+                if (result is OkObjectResult okResult && okResult.StatusCode == StatusCodes.Status200OK)
+                {
+                    NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+                }
+            }
+
+            File.Delete(filePath);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "The file is to big. Max size is 0.5 mb.";
+            Console.WriteLine($"Error uploading file: {ex.Message}");
+        }
     }
 
     private async Task<string> GetProfileImageAsync()
