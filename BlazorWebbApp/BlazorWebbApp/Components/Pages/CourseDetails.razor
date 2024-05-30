@@ -190,6 +190,7 @@
         var query = new GraphQLQuery { Query = $"{{ getCoursesById(id: \"{Id}\") {{ title ingress isDigital reviews isBestSeller imageHeaderUri starRating likesInProcent likes hours content {{description learning includes programDetails {{id description title }} }} authors {{ id name authorImage }} prices {{ price discount }} }} }}" };
         var response = await Http.PostAsJsonAsync("https://courseprovider-ejm.azurewebsites.net/api/graphql?code=WFw9JlFcINQqtM1YeOLUAd6wpm5rJ8i5ajIxp__0mVnUAzFuengWgw%3D%3D", query);
 
+
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<DynamicGraphQlResponse>();
