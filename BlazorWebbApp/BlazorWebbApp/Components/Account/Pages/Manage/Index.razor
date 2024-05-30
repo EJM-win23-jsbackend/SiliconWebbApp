@@ -121,8 +121,10 @@
     {
         try
         {
-            var user = await UserManager.GetUserAsync(HttpContext.User);
-            if(user != null)
+            await Task.Delay(100);
+            var user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+
+            if (user != null)
             {
                 User = user;
 
