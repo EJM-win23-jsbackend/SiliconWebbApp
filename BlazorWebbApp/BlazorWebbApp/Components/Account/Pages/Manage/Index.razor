@@ -1,6 +1,7 @@
 ﻿@page "/Account/Manage"
 
 @using System.ComponentModel.DataAnnotations
+@using BlazorWebbApp.Services
 @using Microsoft.AspNetCore.Identity
 @using BlazorWebbApp.Data
 @using Microsoft.EntityFrameworkCore
@@ -12,22 +13,23 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityUserAccessor UserAccessor
 @inject IdentityRedirectManager RedirectManager
+@inject ApplicationDbContext _context
 @inject HttpClient Http
 
 <PageTitle>Account details</PageTitle>
 <StatusMessage />
 
 <div class="account-forms">
-    <EditForm FormName="accountprofileform" Model="AccountProfileForm" method="post" OnValidSubmit="OnValidProfileSubmitAsync" novalidate>
-        <DataAnnotationsValidator />
-        
+
+    <EditForm FormName="accountprofileform" Model="AccountProfileForm" OnValidSubmit="OnValidProfileSubmitAsync">
+
         @if (!string.IsNullOrEmpty(@StatusMessage))
         {
             <div class="alert alert-info">
                 @StatusMessage
             </div>
         }
-
+       
         <h2>Account Details</h2>
         <h5>Basic Info</h5>
         <div class="account-profileinfo">
@@ -48,8 +50,8 @@
             </div>
             <div id="form-phone" class="input-custom">
                 <label for="Phone">Phone</label>
-                <InputText class="input" @bind-Value="AccountProfileForm.Phone" />
-                <ValidationMessage For="() => AccountProfileForm.Phone" class="field-validation-error" />
+                <InputText class="input" @bind-Value="AccountProfileForm.PhoneNumber" />
+                <ValidationMessage For="() => AccountProfileForm.PhoneNumber" class="field-validation-error" />
             </div>
             <div id="form-bio" class="input-custom">
                 <label for="Biography">Bio <span>(optional)</span></label>
@@ -62,7 +64,7 @@
             </div>
         </div>
     </EditForm>
-    <EditForm FormName="accountaddressform" Model="AccountAddressForm" method="post" OnValidSubmit="OnValidAddressSubmitAsync" novalidate>
+    <EditForm FormName="accountaddressform" Model="AccountAddressForm" OnValidSubmit="OnValidAddressSubmitAsync">
         <DataAnnotationsValidator />
         <hr>
         <h5>Address</h5>
@@ -97,8 +99,9 @@
 
 
 @code {
-
     public ApplicationUser? User { get; set; }
+
+    public string? userId { get; set; }
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -106,11 +109,13 @@
     [SupplyParameterFromQuery]
     public string? StatusMessage { get; set; }
 
-
+    [SupplyParameterFromForm]
     public AccountProfileModel AccountProfileForm { get; set; } = new AccountProfileModel();
 
-
+    [SupplyParameterFromForm]
     public AccountAddressModel AccountAddressForm { get; set; } = new AccountAddressModel();
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,33 +126,35 @@
 
             if (user != null)
             {
-
                 User = user;
 
-                AccountProfileForm = new AccountProfileModel
+                if(AccountProfileForm == null)
+                {
+                    AccountProfileForm = new AccountProfileModel
                     {
-                        FirstName = user.FirstName,
-                        LastName = user.LastName,
-                        Email = user.Email!,
-                        Phone = user.PhoneNumber,
-                        Biography = user.Biography
-                    }; 
+                         FirstName = user.FirstName,
+                         LastName = user.LastName,
+                         Email = user.Email!,
+                         PhoneNumber = user.PhoneNumber,
+                         Biography = user.Biography
+                    };
+                }
 
-                if(user.UserAddress != null)
+                if(AccountAddressForm == null)
+                {
+                    AccountAddressForm = new AccountAddressModel();
+                }
+
+                if (user.UserAddress != null)
                 {
                     AccountAddressForm = new AccountAddressModel
                     {
-                        Addressline_1 = user.UserAddress!.AddressLine_1,
+                        Addressline_1 = user.UserAddress.AddressLine_1,
                         Addressline_2 = user.UserAddress.AddressLine_2,
                         PostalCode = user.UserAddress.PostalCode,
                         City = user.UserAddress.City
                     };
                 }
-            }
-            else
-            {
-                StatusMessage = "connection failed";
-                return;
             }
         }
         catch
@@ -158,33 +165,65 @@
 
     }
 
-    public async Task OnValidProfileSubmitAsync()
+    private async Task OnValidProfileSubmitAsync()
     {
-
-        var userId = User.Id;
-
-        var json = JsonSerializer.Serialize(AccountProfileForm);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-
-        Console.WriteLine($"send PUT request JSON: {json}");
-
-        var result = await Http.PutAsync($"http://localhost:7108/api/user/{userId}", content);
-        if (result.IsSuccessStatusCode)
+        if (User != null)
         {
-            StatusMessage = "Your profile is updated!";
-            await SignInManager.RefreshSignInAsync(User);
-        }
-        else
-        {
-            StatusMessage = "Failed to update..";
+            User.FirstName = AccountProfileForm.FirstName;
+            User.LastName = AccountProfileForm.LastName;
+            User.Email = AccountProfileForm.Email;
+            User.PhoneNumber = AccountProfileForm.PhoneNumber;
+            User.Biography = AccountProfileForm.Biography;
+
+            var result = await UserManager.UpdateAsync(User);
+            if (result.Succeeded)
+            {
+                StatusMessage = "Profile info updated successfully";
+            }
+            else
+            {
+                StatusMessage = "Failed to update profile";
+            }
         }
     }
 
     public async Task OnValidAddressSubmitAsync()
     {
+        if(User != null)
+        {
+            if(User.UserAddress != null)
+            {
+                User.UserAddress.AddressLine_1 = AccountAddressForm.Addressline_1;
+                User.UserAddress.AddressLine_2 = AccountAddressForm.Addressline_2;
+                User.UserAddress.PostalCode = AccountAddressForm.PostalCode;
+                User.UserAddress.City = AccountAddressForm.City;
+            }
+            else
+            {
+                var createAddress = new UserAddress
+                {
+                    AddressLine_1 = AccountAddressForm.Addressline_1,
+                    AddressLine_2 = AccountAddressForm.Addressline_2,
+                    PostalCode = AccountAddressForm.PostalCode,
+                    City = AccountAddressForm.City
+                };
+                if(User.UserAddress != null)
+                {
+                    createAddress.Id = User.UserAddress.Id;
+                }
 
-        
+                User.UserAddress = createAddress;
+            }
+
+            await UserManager.UpdateAsync(User);
+
+            StatusMessage = "Address updated successfully";
+        }
+        else
+        {
+            StatusMessage = "Failed to update address";
+        }
+
     }
 
 
@@ -210,7 +249,7 @@
 
         [Display(Name = "Phone", Prompt = "Enter your phone")]
         [DataType(DataType.PhoneNumber)]
-        public string? Phone { get; set; }
+        public string? PhoneNumber { get; set; }
 
         [Display(Name = "Bio", Prompt = "Add a short bio...")]
         [DataType(DataType.MultilineText)]
