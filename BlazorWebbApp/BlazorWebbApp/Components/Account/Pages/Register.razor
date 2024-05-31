@@ -109,6 +109,13 @@
                 StatusMessage = "Unable to create account, please try again.";
                 return;
             }  
+
+            var setRole = await UserManager.AddToRoleAsync(user, "User");
+            if (!setRole.Succeeded)
+            {
+                StatusMessage = "Unable to set role";
+                return;
+            }
         }
         catch (Exception ex)
         {
