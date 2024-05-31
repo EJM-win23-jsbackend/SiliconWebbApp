@@ -15,9 +15,13 @@
                 <AuthorizeView>
                     <Authorized>
                         <NavLink class="a textLinks" href="/courses">Courses</NavLink>
-                        <NavLink class="a textLinks" href="/admin">Admin</NavLink>
                     </Authorized>
                 </AuthorizeView>
+                    <AuthorizeView Roles="Admin">
+                        <Authorized>
+                        <NavLink class="a textLinks" href="https://win23backoffice-ejm.azurewebsites.net/">Admin</NavLink>
+                        </Authorized>
+                    </AuthorizeView>         
             </nav>
         </div>
         <div class="account-buttons">

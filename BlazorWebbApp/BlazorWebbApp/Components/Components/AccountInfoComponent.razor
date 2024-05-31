@@ -72,7 +72,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(1000);
+        // await Task.Delay(200);
         var authState = await AuthenticationState.GetAuthenticationStateAsync();
         var userPrincipal = authState.User;
 
@@ -86,6 +86,7 @@ else
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
+        await Task.Delay(200);
         string userId = user.Id;
         selectedFile = e.File;
         var stream = new MemoryStream();
@@ -103,6 +104,7 @@ else
 
     private async Task<string> GetProfileImageAsync()
     {
+        await Task.Delay(200);
         string userId = user.Id;
         var profileImage = await _fileUplaod.DownloadProfileImageAsync(userId);
         return profileImage;
