@@ -28,10 +28,6 @@ else
         <Authorized>
             <div class="profile">
                 <div class="content">
-                    @if(!string.IsNullOrEmpty(errorMessage))
-                    {
-                        <div class="error">@errorMessage</div>
-                    }
                     <div class="btnAndimageContainer">
                         <div class="imageContainer">
                             @if (profileImage != null)
@@ -40,7 +36,7 @@ else
                             }
                             else
                             {
-                                <img src="./images/profileimage.svg" alt="profile image">
+                                <img src="./images/avatar.jpg" alt="profile image">
                             }
                         </div>
                         <div class="circle">
@@ -51,8 +47,12 @@ else
                                     </svg>
                                 </label>
                         </div>
-
                     </div>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="error">@errorMessage</div>
+                    }
 
                     <h5>@user.FirstName @user.LastName</h5>
                     <p>@user.Email</p>
