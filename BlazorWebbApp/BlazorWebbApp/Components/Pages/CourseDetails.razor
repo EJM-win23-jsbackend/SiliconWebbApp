@@ -187,51 +187,59 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var query = new GraphQLQuery { Query = $"{{ getCoursesById(id: \"{Id}\") {{ title ingress isDigital reviews isBestSeller imageHeaderUri starRating likesInProcent likes hours content {{description learning includes programDetails {{id description title }} }} authors {{ id name authorImage }} prices {{ price discount }} }} }}" };
+        var query = new GraphQLQuery
+            {
+                Query = $"{{ getCoursesById(id: \"{Id}\") {{ title ingress isDigital reviews isBestSeller imageHeaderUri starRating likesInProcent likes hours content {{description learning includes programDetails {{id description title }} }} authors {{ id name authorImage }} prices {{ price discount }} }} }}"
+            };
         var response = await Http.PostAsJsonAsync("https://courseprovider-ejm.azurewebsites.net/api/graphql?code=WFw9JlFcINQqtM1YeOLUAd6wpm5rJ8i5ajIxp__0mVnUAzFuengWgw%3D%3D", query);
-
 
         if (response.IsSuccessStatusCode)
         {
             var result = await response.Content.ReadFromJsonAsync<DynamicGraphQlResponse>();
-            if (result?.Data.TryGetProperty("getCoursesById", out JsonElement courseData) == true)
+            if (result?.Data != null && result.Data.TryGetProperty("getCoursesById", out JsonElement courseData))
             {
                 // Debugging code to inspect the value of the learning property
                 var learningElement = courseData.GetProperty("content").GetProperty("learning");
                 Console.WriteLine($"Learning property value: {learningElement.ToString()}");
 
                 course = new CourseDetailsModel
-                {
-                    Title = courseData.GetProperty("title").GetString(),
-                    Ingress = courseData.GetProperty("ingress").GetString(),
-                    IsBestSeller = courseData.GetProperty("isBestSeller").GetBoolean(),
-                    IsDigital = courseData.GetProperty("isDigital").GetBoolean(),
-                    ImageHeaderUri = courseData.GetProperty("imageHeaderUri").GetString(),
-                    Reviews = courseData.GetProperty("reviews").GetString(),
-                    Hours = courseData.GetProperty("hours").GetString(),
-                    Likes = courseData.GetProperty("likes").GetString(),
-                    LikesInProcent = courseData.GetProperty("likesInProcent").GetString(),
-                    Authors = courseData.GetProperty("authors").EnumerateArray().Select(author => new AuthorModel
                     {
-                        Id = author.GetProperty("id").GetInt32(),
-                        Name = author.GetProperty("name").GetString(),
-                        AuthorImage = author.GetProperty("authorImage").GetString()
-                    }).ToList(),
-                    Price = $"{courseData.GetProperty("prices").GetProperty("price").GetString()}",
-                    Discount = $"{courseData.GetProperty("prices").GetProperty("discount").GetString()}",
-                    StarRating = int.TryParse(courseData.GetProperty("starRating").GetString(), out int starRatingValue) ? starRatingValue : 0,
-                    Includes = courseData.GetProperty("content").GetProperty("includes").EnumerateArray().Select(x => x.GetString() ?? string.Empty).ToArray(),
-                    Learning = courseData.GetProperty("content").GetProperty("learning").EnumerateArray().Select(x => x.GetString() ?? string.Empty).ToArray(),
-                    Description = $"{courseData.GetProperty("content").GetProperty("description").GetString()}",
-                    ProgramDetails = courseData.GetProperty("content").GetProperty("programDetails").EnumerateArray()
-                        .Select(item => new ProgramDetail
-                        {
-                            Id = item.GetProperty("id").GetInt32(),
-                            Description = item.GetProperty("description").GetString(),
-                            Title = item.GetProperty("title").GetString()
-                        })
-                        .ToList()
-                };
+                        Title = courseData.GetProperty("title").GetString() ?? string.Empty,
+                        Ingress = courseData.GetProperty("ingress").GetString() ?? string.Empty,
+                        IsBestSeller = courseData.GetProperty("isBestSeller").GetBoolean(),
+                        IsDigital = courseData.GetProperty("isDigital").GetBoolean(),
+                        ImageHeaderUri = courseData.GetProperty("imageHeaderUri").GetString() ?? string.Empty,
+                        Reviews = courseData.GetProperty("reviews").GetString() ?? string.Empty,
+                        Hours = courseData.GetProperty("hours").GetString() ?? string.Empty,
+                        Likes = courseData.GetProperty("likes").GetString() ?? string.Empty,
+                        LikesInProcent = courseData.GetProperty("likesInProcent").GetString() ?? string.Empty,
+                        Authors = courseData.GetProperty("authors").ValueKind == JsonValueKind.Array
+                            ? courseData.GetProperty("authors").EnumerateArray().Select(author => new AuthorModel
+                            {
+                                Id = author.GetProperty("id").GetInt32(),
+                                Name = author.GetProperty("name").GetString() ?? string.Empty,
+                                AuthorImage = author.GetProperty("authorImage").GetString() ?? string.Empty
+                            }).ToList()
+                            : new List<AuthorModel>(), // Create an empty list if null
+                        Price = courseData.GetProperty("prices").GetProperty("price").GetString() ?? string.Empty,
+                        Discount = courseData.GetProperty("prices").GetProperty("discount").GetString() ?? string.Empty,
+                        StarRating = int.TryParse(courseData.GetProperty("starRating").GetString(), out int starRatingValue) ? starRatingValue : 0,
+                        Includes = courseData.GetProperty("content").GetProperty("includes").ValueKind == JsonValueKind.Array
+                            ? courseData.GetProperty("content").GetProperty("includes").EnumerateArray().Select(x => x.GetString() ?? string.Empty).ToArray()
+                            : Array.Empty<string>(), // Create an empty array if null
+                        Learning = courseData.GetProperty("content").GetProperty("learning").ValueKind == JsonValueKind.Array
+                            ? courseData.GetProperty("content").GetProperty("learning").EnumerateArray().Select(x => x.GetString() ?? string.Empty).ToArray()
+                            : Array.Empty<string>(), // Create an empty array if null
+                        Description = courseData.GetProperty("content").GetProperty("description").GetString() ?? string.Empty,
+                        ProgramDetails = courseData.GetProperty("content").GetProperty("programDetails").ValueKind == JsonValueKind.Array
+                            ? courseData.GetProperty("content").GetProperty("programDetails").EnumerateArray().Select(item => new ProgramDetail
+                            {
+                                Id = item.GetProperty("id").GetInt32(),
+                                Description = item.GetProperty("description").GetString() ?? string.Empty,
+                                Title = item.GetProperty("title").GetString() ?? string.Empty
+                            }).ToList()
+                            : new List<ProgramDetail>() // Create an empty list if null
+                    };
 
                 // Debug output to verify authors data
                 Console.WriteLine("Authors data:");
@@ -243,3 +251,4 @@
         }
     }
 }
+
