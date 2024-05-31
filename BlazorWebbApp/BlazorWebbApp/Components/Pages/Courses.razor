@@ -85,10 +85,10 @@
                 {
                     Id = course.GetProperty("id").GetString(),
                     IsBestSeller = course.GetProperty("isBestSeller").GetBoolean(),
-                    ImageUri = course.GetProperty("imageUri").GetString(), 
-                    Title = course.GetProperty("title").GetString(),
-                    Hours = course.GetProperty("hours").GetString(),
-                    Likes = course.GetProperty("likes").GetString(),
+                    ImageUri = course.GetProperty("imageUri").GetString() ?? string.Empty, 
+                    Title = course.GetProperty("title").GetString() ?? string.Empty,
+                    Hours = course.GetProperty("hours").GetString() ?? string.Empty,
+                    Likes = course.GetProperty("likes").GetString() ?? string.Empty,
                     LikesInProcent = course.GetProperty("likesInProcent").GetString(),
                     Author = course.GetProperty("authors")[0].GetProperty("name").GetString(), // gets only one author, needs more functionality to get multible authors
                     Price = $"{course.GetProperty("prices").GetProperty("price").GetString()}",
