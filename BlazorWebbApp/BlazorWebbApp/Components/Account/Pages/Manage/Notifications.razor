@@ -106,24 +106,35 @@
         if (HttpContext != null)
         {
             User = await UserManager.GetUserAsync(HttpContext.User) ?? null;
-
+            if (User == null)
+            {
+                Debug.WriteLine("User is null");
+                return;
+            }
             if(string.IsNullOrEmpty(subscriberModel.Email) && User != null && User.Email != null)
             {
                 subscriberModel.Email = User.Email;
             }
         }
 
-        var subscriptionOn = await _subscribeServices.GetASubscriberAsync(User!.Id);
-        if(subscriptionOn is OkObjectResult okResult)
+        if (User != null && !string.IsNullOrEmpty(User.Id))
         {
-            var responseObject = okResult.Value as dynamic;
-
-            if(responseObject != null)
+            var subscriptionOn = await _subscribeServices.GetASubscriberAsync(User.Id);
+            // Fortsätt som vanligt
+            if (subscriptionOn is OkObjectResult okResult)
             {
-                subscriberModel.Email = responseObject.Email;
-                subscriberModel.IsChecked = true;
-            }
+                var responseObject = okResult.Value as dynamic;
 
+                if (responseObject != null)
+                {
+                    subscriberModel.Email = responseObject.Email;
+                    subscriberModel.IsChecked = true;
+                }
+            }
+        }
+        else
+        {
+            Debug.WriteLine("User.Id is null or empty");
         }
     }
 
