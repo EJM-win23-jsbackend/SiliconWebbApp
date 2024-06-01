@@ -94,6 +94,15 @@ else
     {
         try
         {
+            const long maxFileSize = 500 * 1024;
+
+            if (e.File.Size > maxFileSize)
+            {
+                errorMessage = "The file is too big. Max size is 0.5 MB.";
+                Console.WriteLine("The file is too big. Max size is 0.5 MB.");
+                return;
+            }
+
             string userId = user.Id;
             selectedFile = e.File;
 
